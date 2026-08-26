@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find Your Group's Player Type — TableTop Games To Go</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#18101F;
+    --bg-alt:#241A30;
+    --bg-alt2:#2E2039;
+    --cream:#F7F1E6;
+    --cream-dim:#C9BEDA;
+    --red:#E6394A;
+    --orange:#F4A259;
+    --yellow:#FFD23F;
+    --green:#4FB477;
+    --purple:#9B5DE5;
+    --radius:18px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(circle at 20% 0%, #2A1D38 0%, var(--bg) 55%);
+    color:var(--cream);
+    font-family:'Nunito',sans-serif;
+    min-height:100vh;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:32px 16px 64px;
+  }
+  .app{ width:100%; max-width:560px; }
+  .brand{ text-align:center; margin-bottom:22px; }
+  .brand .dice-row{ display:flex; justify-content:center; gap:8px; margin-bottom:10px; }
+  .brand h1{
+    font-family:'Bungee',cursive;
+    font-size:1.5rem;
+    letter-spacing:0.5px;
+    margin:0;
+    line-height:1.25;
+    background:linear-gradient(90deg,var(--yellow),var(--orange),var(--red));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .brand p{ margin:8px 0 0; color:var(--cream-dim); font-weight:700; font-size:0.95rem; }
+
+  .card{
+    background:var(--bg-alt);
+    border:1px solid #3A2A4A;
+    border-radius:var(--radius);
+    padding:28px 24px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.35);
+    position:relative;
+    overflow:hidden;
+  }
+  .card::before{
+    content:"";
+    position:absolute; top:-40px; right:-40px;
+    width:140px;height:140px;
+    background:radial-gradient(circle, rgba(155,93,229,0.25), transparent 70%);
+  }
+
+  .progress{ display:flex; gap:6px; justify-content:center; margin-bottom:22px; }
+  .pip{ width:10px;height:10px; border-radius:3px; background:#42324F; transform:rotate(45deg); transition:background 0.3s ease, transform 0.3s ease; }
+  .pip.done{ background:var(--orange); }
+  .pip.active{ background:var(--yellow); transform:rotate(45deg) scale(1.3); }
+
+  .die{
+    width:84px;height:84px; margin:0 auto 20px;
+    background:var(--cream); border-radius:16px; position:relative;
+    display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(3,1fr);
+    padding:14px; animation:roll 3.2s ease-in-out infinite;
+    box-shadow:0 10px 25px rgba(0,0,0,0.4);
+  }
+  .die span{ width:12px;height:12px;border-radius:50%;background:var(--bg);}
+  .die span:nth-child(1){grid-area:1/1;}
+  .die span:nth-child(2){grid-area:1/3;}
+  .die span:nth-child(3){grid-area:2/2;}
+  .die span:nth-child(4){grid-area:3/1;}
+  .die span:nth-child(5){grid-area:3/3;}
+  @keyframes roll{
+    0%,100%{ transform:rotate(0deg);}
+    25%{ transform:rotate(90deg);}
+    50%{ transform:rotate(180deg);}
+    75%{ transform:rotate(270deg);}
+  }
+
+  h2.qtext{ font-family:'Bungee',cursive; font-size:1.1rem; line-height:1.5; margin:0 0 20px; color:var(--cream); }
+  .eyebrow{ text-transform:uppercase; letter-spacing:1.5px; font-size:0.72rem; font-weight:800; color:var(--yellow); margin-bottom:8px; display:block; }
+
+  .options{ display:flex; flex-direction:column; gap:10px; }
+  .opt{
+    text-align:left; background:var(--bg-alt2); border:2px solid transparent;
+    color:var(--cream); font-family:'Nunito',sans-serif; font-weight:700; font-size:0.95rem;
+    padding:14px 16px; border-radius:12px; cursor:pointer; transition:all 0.15s ease;
+  }
+  .opt:hover{ border-color:var(--orange); transform:translateY(-1px); }
+  .opt.picked{ border-color:var(--yellow); background:#3A2C48; }
+
+  .start-btn, .next-btn, .restart-btn{
+    display:inline-block; margin-top:6px;
+    background:linear-gradient(90deg,var(--red),var(--orange));
+    color:#1A1220; border:none; font-family:'Bungee',cursive; font-size:0.85rem;
+    letter-spacing:0.5px; padding:14px 22px; border-radius:12px; cursor:pointer; width:100%;
+    transition:transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .start-btn:hover, .next-btn:hover, .restart-btn:hover{
+    transform:translateY(-2px); box-shadow:0 8px 18px rgba(230,57,74,0.35);
+  }
+  .next-btn:disabled{ opacity:0.35; cursor:not-allowed; transform:none; box-shadow:none; }
+
+  .center-text{ text-align:center; color:var(--cream-dim); font-size:0.9rem; line-height:1.6; margin-bottom:20px;}
+
+  .result-die{
+    width:56px;height:56px; margin:0 auto 14px; border-radius:12px;
+    display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(3,1fr);
+    padding:9px; animation:settle 0.7s cubic-bezier(.2,1.4,.4,1);
+  }
+  .result-die span{ width:8px;height:8px;border-radius:50%; background:var(--bg);}
+  .result-die span:nth-child(1){grid-area:1/1;}
+  .result-die span:nth-child(2){grid-area:1/3;}
+  .result-die span:nth-child(3){grid-area:2/2;}
+  .result-die span:nth-child(4){grid-area:3/1;}
+  .result-die span:nth-child(5){grid-area:3/3;}
+  @keyframes settle{
+    0%{ transform:rotate(540deg) scale(0.5); opacity:0;}
+    100%{ transform:rotate(0deg) scale(1); opacity:1;}
+  }
+
+  .result-eyebrow{ text-align:center; text-transform:uppercase; letter-spacing:2px; font-size:0.72rem; font-weight:800; color:var(--cream-dim); margin-bottom:6px; }
+  .result-title{ font-family:'Bungee',cursive; font-size:1.6rem; text-align:center; margin:0 0 10px; }
+  .result-tag{ text-align:center; color:var(--cream-dim); font-weight:700; font-size:0.95rem; margin-bottom:6px; padding:0 8px; }
+  .result-groupsize{
+    text-align:center; font-size:0.82rem; font-weight:800; color:var(--green);
+    margin-bottom:24px; text-transform:uppercase; letter-spacing:0.5px;
+  }
+
+  .game-card{
+    background:var(--bg-alt2); border-radius:14px; padding:16px 16px; margin-bottom:12px;
+    border-left:5px solid var(--orange); position:relative;
+  }
+  .game-card.recommended{ border-left-color:var(--yellow); background:#3A2C48;}
+  .badge{
+    display:inline-block; font-size:0.68rem; font-weight:800; text-transform:uppercase;
+    letter-spacing:1px; background:var(--yellow); color:#1A1220; padding:3px 8px; border-radius:20px;
+    margin-bottom:8px; margin-right:6px;
+  }
+  .badge.tier{ background:var(--purple); color:var(--cream);}
+  .badge.players{ background:var(--green); color:#12241A; }
+  .game-name{ font-weight:900; font-size:1.05rem; margin:2px 0 4px;}
+  .game-why{ color:var(--cream-dim); font-size:0.87rem; line-height:1.5; margin:0 0 4px;}
+  .fit-note{ font-size:0.78rem; font-weight:800; color:var(--yellow); }
+
+  .more-wrap{ margin-top:6px; margin-bottom:6px; }
+  .more-label{ font-size:0.72rem; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:var(--cream-dim); margin-bottom:8px; }
+  .chips{ display:flex; flex-wrap:wrap; gap:6px; }
+  .chip{
+    font-size:0.78rem; font-weight:700; background:var(--bg-alt2); color:var(--cream-dim);
+    padding:6px 10px; border-radius:20px; border:1px solid #3A2A4A;
+  }
+
+  .cta{
+    margin-top:22px; text-align:center; background:var(--bg-alt2); border-radius:14px;
+    padding:16px; font-size:0.88rem; color:var(--cream-dim); line-height:1.6;
+  }
+  .cta strong{ color:var(--yellow); }
+  .cta a.form-link{
+    display:inline-block; margin-top:12px;
+    background:linear-gradient(90deg,var(--yellow),var(--orange));
+    color:#1A1220; font-family:'Bungee',cursive; font-size:0.78rem; letter-spacing:0.5px;
+    text-decoration:none; padding:12px 18px; border-radius:10px;
+    transition:transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .cta a.form-link:hover{ transform:translateY(-2px); box-shadow:0 8px 18px rgba(255,210,63,0.3); }
+
+  .hidden{ display:none; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="brand">
+    <div class="dice-row">
+      <svg width="18" height="18" viewBox="0 0 18 18"><rect width="18" height="18" rx="4" fill="#E6394A"/></svg>
+      <svg width="18" height="18" viewBox="0 0 18 18"><rect width="18" height="18" rx="4" fill="#FFD23F"/></svg>
+      <svg width="18" height="18" viewBox="0 0 18 18"><rect width="18" height="18" rx="4" fill="#4FB477"/></svg>
+    </div>
+    <h1>TABLETOP GAMES TO GO</h1>
+    <p>Find Your Group's Player Type</p>
+  </div>
+
+  <div class="card">
+    <div class="progress" id="progress"></div>
+
+    <!-- START -->
+    <div id="screen-start">
+      <div class="die"><span></span><span></span><span></span><span></span><span></span></div>
+      <p class="center-text">Answer 11 quick questions about how your crew actually plays together — we'll tell you your group's player type, how many of you usually show up, and the games from our actual shelf your table is most likely to love.</p>
+      <button class="start-btn" onclick="startQuiz()">ROLL TO START</button>
+    </div>
+
+    <!-- QUESTION -->
+    <div id="screen-question" class="hidden">
+      <span class="eyebrow" id="q-eyebrow"></span>
+      <h2 class="qtext" id="q-text"></h2>
+      <div class="options" id="q-options"></div>
+      <button class="next-btn" id="next-btn" disabled onclick="nextQuestion()">NEXT</button>
+    </div>
+
+    <!-- RESULT -->
+    <div id="screen-result" class="hidden">
+      <div class="result-die" id="result-die"><span></span><span></span><span></span><span></span><span></span></div>
+      <div class="result-eyebrow">Your Group's Player Type Is</div>
+      <div class="result-title" id="result-title"></div>
+      <div class="result-tag" id="result-tag"></div>
+      <div class="result-groupsize" id="result-groupsize"></div>
+      <div id="result-games"></div>
+      <div class="more-wrap">
+        <div class="more-label">Also from our shelf you might like</div>
+        <div class="chips" id="result-more"></div>
+      </div>
+      <div class="cta">Ready to book? Message us on our <strong>TableTop Games To Go</strong> Facebook page or call/text <strong>0917-877-8619</strong> — tell us your group's player type and headcount, and we'll bring the right game to your door.<br>
+        <a class="form-link" href="https://docs.google.com/forms/d/e/1FAIpQLSfKprdBPWiibzsPFCuH8bpvjHnIOZ5nFEvEN14EmniVHX8EIw/viewform" target="_blank" rel="noopener">FILL OUT RENTAL FORM →</a>
+      </div>
+      <button class="restart-btn" onclick="restartQuiz()" style="margin-top:14px;">TAKE IT AGAIN</button>
+    </div>
+  </div>
+</div>
+
+<script src="quiz-engine.js"></script>
+<script>
+// ---------- QUESTIONS ----------
+const questions = [
+  {
+    eyebrow: "Question 1 of 6",
+    text: "When your group is close to winning, what usually happens?",
+    options: [
+      { label: "Someone's been quietly setting this up since turn two.", axis: "S" },
+      { label: "The trash talk starts and everyone goes for the kill.", axis: "C" },
+      { label: "The table gets swept up in the drama of the moment.", axis: "F" },
+      { label: "Everyone's laughing too hard to even care who wins.", axis: "So" }
+    ]
+  },
+  {
+    eyebrow: "Question 2 of 6",
+    text: "What's your group's idea of a great game night?",
+    options: [
+      { label: "A quiet, focused challenge where every decision matters.", axis: "S" },
+      { label: "A chaotic free-for-all full of backstabbing and alliances.", axis: "C" },
+      { label: "A shared story that unfolds differently every time.", axis: "F" },
+      { label: "A loud night where nobody's really tracking the score.", axis: "So" }
+    ]
+  },
+  {
+    eyebrow: "Question 3 of 6",
+    text: "What usually frustrates your group in a game?",
+    options: [
+      { label: "Randomness wrecking someone's good plan.", axis: "S" },
+      { label: "A game where nobody can actually attack each other.", axis: "C" },
+      { label: "Thin theme — nothing about it feels alive.", axis: "F" },
+      { label: "Rules so fiddly nobody's having fun anymore.", axis: "So" }
+    ]
+  },
+  {
+    eyebrow: "Question 4 of 6",
+    text: "Pick the mechanic your group gets most excited about:",
+    options: [
+      { label: "Worker placement and resource optimization.", axis: "S" },
+      { label: "Hidden roles, bluffing, and sabotage.", axis: "C" },
+      { label: "Deep narrative choices and character growth.", axis: "F" },
+      { label: "Fast, silly party mechanics anyone can jump into.", axis: "So" }
+    ]
+  },
+  {
+    eyebrow: "Question 5 of 6",
+    text: "The best part of your group winning is...",
+    options: [
+      { label: "The quiet satisfaction of a plan that worked perfectly.", axis: "S" },
+      { label: "Watching the losing side's faces.", axis: "C" },
+      { label: "Getting to see how the story finally wraps up.", axis: "F" },
+      { label: "The group photo of everyone still laughing.", axis: "So" }
+    ]
+  },
+  {
+    eyebrow: "Question 6 of 6",
+    text: "If we designed a session just for your group, it would include...",
+    options: [
+      { label: "A brain-burner strategy game and a scoring pad.", axis: "S" },
+      { label: "A game engineered for maximum betrayal.", axis: "C" },
+      { label: "A Game/Dungeon Master and a world built just for your group.", axis: "F" },
+      { label: "A party game deck built for a big, loud group.", axis: "So" }
+    ]
+  }
+];
+
+const expQuestion = {
+  eyebrow: "Almost done",
+  text: "How experienced is your group with board games overall?",
+  options: [
+    { label: "First time or almost — total beginners.", tier: "Beginner" },
+    { label: "We play sometimes, we know the basics.", tier: "Intermediate" },
+    { label: "We're regulars — bring on the complex stuff.", tier: "Advanced" }
+  ]
+};
+
+const sizeQuestion = {
+  eyebrow: "Last one",
+  text: "How many players usually join your game nights?",
+  options: [
+    { label: "Just 2–3 of us", bucket: "2-3", min: 2, max: 3 },
+    { label: "A small crew of 4–6", bucket: "4-6", min: 4, max: 6 },
+    { label: "A big group of 7–10", bucket: "7-10", min: 7, max: 10 },
+    { label: "More than 10 — the whole squad", bucket: "10+", min: 11, max: 99 }
+  ]
+};
+
+const typeQuestion = {
+  eyebrow: "Play style",
+  text: "Does your group want to compete or team up?",
+  options: [
+    { label: "Go head-to-head — may the best player win.", value: "Competitive" },
+    { label: "Team up and beat the game together.", value: "Cooperative" },
+    { label: "Either — we just want to try some games.", value: "either" }
+  ]
+};
+
+const mechanicsQuestion = {
+  eyebrow: "Rules depth",
+  text: "How much rules complexity does your group enjoy?",
+  options: [
+    { label: "Simple — teach us in a few minutes.", value: "Simple" },
+    { label: "Medium — a bit of depth is good.", value: "Medium" },
+    { label: "Hard — we like a real challenge.", value: "Hard" },
+    { label: "Complex — bring on the brain-burners.", value: "Complex" }
+  ]
+};
+
+const setupQuestion = {
+  eyebrow: "Setup",
+  text: "How much setup are you up for before playing?",
+  options: [
+    { label: "Quick — deal and go.", value: "Simple" },
+    { label: "Medium — a few minutes is fine.", value: "Medium" },
+    { label: "Involved — we don't mind a real setup.", value: "Hard" },
+    { label: "Complex — the more elaborate the better.", value: "Complex" }
+  ]
+};
+
+// ---------- PROFILES — archetype titles/taglines. Game data comes from quiz-engine.js ----------
+const profiles = {
+  S: {
+    title: "The Architects",
+    tag: "Your group sees three moves ahead before anyone else sees one. A great game night is a system worth mastering together."
+  },
+  C: {
+    title: "The Conquerors",
+    tag: "Winning isn't everything for your group — it's the only thing. You want the table to remember who came out on top."
+  },
+  F: {
+    title: "The Dreamweavers",
+    tag: "For your group, the game isn't a game — it's a world you all get to step into together."
+  },
+  So: {
+    title: "The Connectors",
+    tag: "The best part of any game night for your group is the people around the table — the game's just the excuse."
+  }
+};
+
+// ---------- STATE ----------
+let currentIdx = 0; // 0-5 personality, 6 experience, 7 type, 8 mechanics, 9 setup, 10 size, 11 result
+const totalSteps = questions.length + 5; // 6 personality + experience + type + mechanics + setup + size
+let scores = { S: 0, C: 0, F: 0, So: 0 };
+let axisPicks = [];      // ordered log of axis choices, used for tie-breaking
+let chosenTier = null;
+let chosenType = null;
+let chosenMechanics = null;
+let chosenSetup = null;
+let chosenSize = null;
+let pickedThisScreen = null;
+
+function renderProgress(){
+  const el = document.getElementById('progress');
+  el.innerHTML = '';
+  for(let i=0;i<totalSteps;i++){
+    const pip = document.createElement('div');
+    pip.className = 'pip';
+    if(i < currentIdx) pip.classList.add('done');
+    if(i === currentIdx) pip.classList.add('active');
+    el.appendChild(pip);
+  }
+}
+
+function startQuiz(){
+  document.getElementById('screen-start').classList.add('hidden');
+  document.getElementById('screen-question').classList.remove('hidden');
+  currentIdx = 0;
+  scores = { S:0, C:0, F:0, So:0 };
+  axisPicks = [];
+  chosenTier = null;
+  chosenType = null;
+  chosenMechanics = null;
+  chosenSetup = null;
+  chosenSize = null;
+  renderQuestion();
+}
+
+function getCurrentQuestion(){
+  if(currentIdx < questions.length) return { type:'axis', q: questions[currentIdx] };
+  if(currentIdx === questions.length)     return { type:'tier',      q: expQuestion };
+  if(currentIdx === questions.length + 1) return { type:'gtype',     q: typeQuestion };
+  if(currentIdx === questions.length + 2) return { type:'mechanics', q: mechanicsQuestion };
+  if(currentIdx === questions.length + 3) return { type:'setup',     q: setupQuestion };
+  return { type:'size', q: sizeQuestion };
+}
+
+function renderQuestion(){
+  renderProgress();
+  pickedThisScreen = null;
+  document.getElementById('next-btn').disabled = true;
+
+  const { q } = getCurrentQuestion();
+
+  document.getElementById('q-eyebrow').textContent = q.eyebrow;
+  document.getElementById('q-text').textContent = q.text;
+
+  const optsWrap = document.getElementById('q-options');
+  optsWrap.innerHTML = '';
+  q.options.forEach((opt) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.textContent = opt.label;
+    btn.onclick = () => {
+      [...optsWrap.children].forEach(c => c.classList.remove('picked'));
+      btn.classList.add('picked');
+      pickedThisScreen = opt;
+      document.getElementById('next-btn').disabled = false;
+    };
+    optsWrap.appendChild(btn);
+  });
+}
+
+function nextQuestion(){
+  if(!pickedThisScreen) return;
+
+  const { type } = getCurrentQuestion();
+  if(type === 'axis'){
+    scores[pickedThisScreen.axis]++;
+    axisPicks.push(pickedThisScreen.axis);
+  } else if(type === 'tier'){
+    chosenTier = pickedThisScreen.tier;
+  } else if(type === 'gtype'){
+    chosenType = pickedThisScreen.value;
+  } else if(type === 'mechanics'){
+    chosenMechanics = pickedThisScreen.value;
+  } else if(type === 'setup'){
+    chosenSetup = pickedThisScreen.value;
+  } else if(type === 'size'){
+    chosenSize = pickedThisScreen;
+  }
+
+  currentIdx++;
+
+  if(currentIdx > questions.length + 4){
+    showResult();
+  } else {
+    renderQuestion();
+  }
+}
+
+function rangesOverlap(aMin, aMax, bMin, bMax){
+  return aMin <= bMax && bMin <= aMax;
+}
+
+// Highest-scoring axis wins. On a tie, the winner is the tied axis the group
+// expressed most recently (their latest signal) rather than a fixed A-Z default.
+function resolveTopAxis(){
+  const axes = ['S','C','F','So'];
+  const topScore = Math.max(...axes.map(a => scores[a]));
+  const tied = axes.filter(a => scores[a] === topScore);
+  if(tied.length === 1) return tied[0];
+  for(let i = axisPicks.length - 1; i >= 0; i--){
+    if(tied.includes(axisPicks[i])) return axisPicks[i];
+  }
+  return tied[0]; // safety net (shouldn't happen: a tied axis was always picked)
+}
+
+function showResult(){
+  renderProgress();
+  document.getElementById('screen-question').classList.add('hidden');
+  document.getElementById('screen-result').classList.remove('hidden');
+
+  const topAxis = resolveTopAxis();
+
+  const profile = profiles[topAxis];
+  document.getElementById('result-title').textContent = profile.title;
+  document.getElementById('result-tag').textContent = profile.tag;
+  document.getElementById('result-groupsize').textContent = 'Usual crew size: ' + chosenSize.label.replace(/^Just |^A small crew of |^A big group of |^More than 10 — /,'');
+
+  const dieColors = { S:'#9B5DE5', C:'#E6394A', F:'#4FB477', So:'#FFD23F' };
+  document.getElementById('result-die').style.background = dieColors[topAxis];
+
+  const prefs = {
+    type: chosenType,
+    mechanics: chosenMechanics,
+    setup: chosenSetup,
+    experience: chosenTier,
+    sizeMin: chosenSize.min,
+    sizeMax: chosenSize.max
+  };
+  const rec = QuizEngine.rankGamesForResult(topAxis, prefs);
+
+  const gamesWrap = document.getElementById('result-games');
+  gamesWrap.innerHTML = '';
+  rec.top.forEach((entry, idx) => {
+    const g = entry.game;
+    const m = entry.matches;
+    const badges = [];
+    if(idx === 0) badges.push('<span class="badge">Best match for you</span>');
+    if(m.type) badges.push('<span class="badge players">' + g.type + ' ✓</span>');
+    if(m.mechanics) badges.push('<span class="badge tier">Rules fit ✓</span>');
+    if(m.setup) badges.push('<span class="badge tier">Setup fit ✓</span>');
+    const card = document.createElement('div');
+    card.className = 'game-card' + (idx === 0 ? ' recommended' : '');
+    card.innerHTML = `
+      ${badges.join(' ')}
+      <span class="badge players">${g.min}-${g.max} players</span>
+      <div class="game-name">${g.name}</div>
+      <p class="game-why">${g.why}</p>
+      ${g.note ? '<p class="game-why"><em>' + g.note + '</em></p>' : ''}
+      ${m.size ? '<span class="fit-note">✓ Fits your usual group size</span>' : ''}
+    `;
+    gamesWrap.appendChild(card);
+  });
+
+  // Honest note when a preference can't be fully met.
+  if(rec.coopUnavailable || rec.closestNote){
+    const note = document.createElement('p');
+    note.className = 'game-why';
+    note.style.marginTop = '4px';
+    if(rec.coopUnavailable){
+      note.textContent = 'We don’t have ' + chosenType.toLowerCase() +
+        ' games in this style yet — here are the closest matches from our shelf.';
+    } else {
+      note.textContent = 'These are the most challenging games we currently carry in this style.';
+    }
+    gamesWrap.appendChild(note);
+  }
+
+  const moreWrap = document.getElementById('result-more');
+  moreWrap.innerHTML = '';
+  rec.restNames.forEach(name => {
+    const chip = document.createElement('span');
+    chip.className = 'chip';
+    chip.textContent = name;
+    moreWrap.appendChild(chip);
+  });
+  document.querySelector('.more-wrap').style.display = rec.restNames.length ? '' : 'none';
+}
+
+function restartQuiz(){
+  document.getElementById('screen-result').classList.add('hidden');
+  document.getElementById('screen-start').classList.remove('hidden');
+  currentIdx = 0;
+  renderProgress();
+}
+
+renderProgress();
+</script>
+</body>
+</html>

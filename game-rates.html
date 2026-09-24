@@ -105,10 +105,40 @@
     letter-spacing:0.5px; padding:3px 9px; border-radius:12px; line-height:1.4;
   }
 
+  @keyframes swipe-hint{
+    0%,100%{ transform:translateX(0); }
+    50%{ transform:translateX(6px); }
+  }
+  .scroll-hint{
+    display:none; align-items:center; justify-content:center; gap:8px;
+    color:var(--cream-dim); font-size:0.8rem; font-weight:800; margin-bottom:10px; text-align:center;
+  }
+  .scroll-hint.visible{ display:flex; }
+  .scroll-hint .arrow{ display:inline-block; color:var(--yellow); font-size:1rem; animation:swipe-hint 1.4s ease-in-out infinite; }
+
+  .rate-table-outer{ position:relative; margin-bottom:26px; }
   .rate-table-wrap{
     overflow:auto; max-height:min(640px, 65vh); background:var(--bg-alt); border:1px solid #3A2A4A; border-radius:var(--radius);
-    margin-bottom:26px; position:relative; z-index:0;
+    position:relative; z-index:0;
   }
+  .scroll-fade{
+    position:absolute; top:1px; bottom:1px; width:32px; pointer-events:none; z-index:5;
+    opacity:0; transition:opacity 0.2s ease;
+  }
+  .scroll-fade-left{
+    left:1px; border-radius:calc(var(--radius) - 1px) 0 0 calc(var(--radius) - 1px);
+    background:linear-gradient(to right, var(--bg-alt), rgba(36,26,48,0));
+  }
+  .scroll-fade-right{
+    right:1px; border-radius:0 calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0;
+    background:linear-gradient(to left, var(--bg-alt), rgba(36,26,48,0));
+  }
+  .scroll-fade::after{
+    content:''; position:absolute; top:50%; transform:translateY(-50%);
+    color:var(--yellow); font-size:1.3rem; font-weight:900; line-height:1;
+  }
+  .scroll-fade-left::after{ content:'‹'; left:2px; }
+  .scroll-fade-right::after{ content:'›'; right:2px; }
   table.rate-table{ width:100%; min-width:860px; border-collapse:separate; border-spacing:0; font-size:0.87rem; table-layout:fixed; }
   table.rate-table th{
     text-align:left; padding:12px 14px; border-bottom:1px solid #3A2A4A; background:var(--bg-alt2);
@@ -209,7 +239,7 @@
   <div class="hero">
     <h2>Renting a Game or Two, À La Carte</h2>
     <p>Prices below are per game, in ₱, for 1, 2, or 3-day rentals — handy if you already know what you want instead of booking a full package. Search or filter by category to find it fast.</p>
-    <p>Renting several titles at once, or want a Game Master to teach and run the night? <a class="quote-link" href="rental-terms.html">See how our packages &amp; rates work →</a></p>
+    <p>Renting several titles at once, or want a Game Master to teach and run the night? <a class="quote-link" href="rental-terms.html" target="_blank" rel="noopener">See how our packages &amp; rates work →</a></p>
   </div>
 
   <div class="toolbar">
@@ -223,32 +253,37 @@
   </div>
 
   <div class="result-count" id="result-count"></div>
-  <div class="rate-table-wrap">
-    <table class="rate-table">
-      <colgroup>
-        <col style="width:16%">
-        <col style="width:19%">
-        <col style="width:11%">
-        <col style="width:11%">
-        <col style="width:10%">
-        <col style="width:11%">
-        <col style="width:11%">
-        <col style="width:11%">
-      </colgroup>
-      <thead>
-        <tr>
-          <th>Category</th>
-          <th>Game</th>
-          <th>Players</th>
-          <th>Player Type</th>
-          <th>Duration</th>
-          <th class="tnum">1 Day</th>
-          <th class="tnum">2 Days</th>
-          <th class="tnum">3 Days</th>
-        </tr>
-      </thead>
-      <tbody id="rate-tbody"></tbody>
-    </table>
+  <div class="scroll-hint" id="scroll-hint"><span class="arrow">↔</span> Scroll sideways to see all columns</div>
+  <div class="rate-table-outer">
+    <div class="rate-table-wrap" id="rate-table-wrap">
+      <table class="rate-table">
+        <colgroup>
+          <col style="width:16%">
+          <col style="width:19%">
+          <col style="width:11%">
+          <col style="width:11%">
+          <col style="width:10%">
+          <col style="width:11%">
+          <col style="width:11%">
+          <col style="width:11%">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Game</th>
+            <th>Players</th>
+            <th>Player Type</th>
+            <th>Duration</th>
+            <th class="tnum">1 Day</th>
+            <th class="tnum">2 Days</th>
+            <th class="tnum">3 Days</th>
+          </tr>
+        </thead>
+        <tbody id="rate-tbody"></tbody>
+      </table>
+    </div>
+    <div class="scroll-fade scroll-fade-left" id="fade-left" aria-hidden="true"></div>
+    <div class="scroll-fade scroll-fade-right" id="fade-right" aria-hidden="true"></div>
   </div>
   <div class="empty-state" id="empty-state" style="display:none;">No games match your search — try a different title or category, or <a href="#" style="color:var(--yellow);font-weight:800;" onclick="document.getElementById('search-input').value='';document.getElementById('search-input').dispatchEvent(new Event('input'));return false;">clear your search</a>.</div>
 
@@ -492,11 +527,12 @@ function renderGrid(){
 
   if(!filtered.length){
     empty.style.display = 'block';
-    document.querySelector('.rate-table-wrap').style.display = 'none';
+    document.querySelector('.rate-table-outer').style.display = 'none';
+    document.getElementById('scroll-hint').classList.remove('visible');
     return;
   }
   empty.style.display = 'none';
-  document.querySelector('.rate-table-wrap').style.display = '';
+  document.querySelector('.rate-table-outer').style.display = '';
 
   filtered.forEach(g => {
     const c = CAT_COLORS[g.category] || CAT_COLORS["Uncategorized / New Arrival"];
@@ -538,7 +574,23 @@ function renderGrid(){
   });
 
   SiteConfig.applySiteConfig(document, SiteConfig.SITE);
+  updateScrollFades();
 }
+
+// Makes horizontal scrollability obvious on mobile: shows a "scroll sideways" hint
+// and left/right edge fades, updating live as the user scrolls the table.
+function updateScrollFades(){
+  const wrap = document.getElementById('rate-table-wrap');
+  const hint = document.getElementById('scroll-hint');
+  const fadeLeft = document.getElementById('fade-left');
+  const fadeRight = document.getElementById('fade-right');
+  const canScroll = wrap.scrollWidth > wrap.clientWidth + 1;
+  hint.classList.toggle('visible', canScroll);
+  fadeLeft.style.opacity = (canScroll && wrap.scrollLeft > 4) ? '1' : '0';
+  fadeRight.style.opacity = (canScroll && wrap.scrollLeft < wrap.scrollWidth - wrap.clientWidth - 4) ? '1' : '0';
+}
+document.getElementById('rate-table-wrap').addEventListener('scroll', updateScrollFades);
+window.addEventListener('resize', updateScrollFades);
 
 // Delegated so it keeps working after renderGrid() replaces the rows.
 document.getElementById('rate-tbody').addEventListener('click', (e) => {

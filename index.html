@@ -27,12 +27,9 @@
     color:var(--cream);
     font-family:'Nunito',sans-serif;
     min-height:100vh;
-    display:flex;
-    align-items:flex-start;
-    justify-content:center;
     padding:32px 16px 64px;
   }
-  .app{ width:100%; max-width:560px; }
+  .app{ width:100%; max-width:560px; margin:0 auto; }
   .brand{ text-align:center; margin-bottom:22px; }
   .brand .dice-row{ display:flex; justify-content:center; gap:8px; margin-bottom:10px; }
   .brand h1{
@@ -180,6 +177,84 @@
   .cta a.form-link:hover{ transform:translateY(-2px); box-shadow:0 8px 18px rgba(255,210,63,0.3); }
 
   .hidden{ display:none; }
+
+  /* ---------- Shelf (full catalog + rates) ---------- */
+  .shelf{ width:100%; max-width:960px; margin:56px auto 0; }
+  .shelf-head{ text-align:center; margin-bottom:20px; }
+  .shelf-head h2{ font-family:'Bungee',cursive; font-size:1.3rem; line-height:1.5; margin:0 0 10px; }
+  .shelf-head p{ color:var(--cream-dim); font-size:0.9rem; line-height:1.6; margin:0 auto; max-width:620px; }
+
+  .shelf-toolbar{
+    background:var(--bg-alt); border:1px solid #3A2A4A; border-radius:var(--radius);
+    padding:18px 20px; margin:20px 0 18px; position:sticky; top:12px; z-index:5;
+    box-shadow:0 12px 30px rgba(0,0,0,0.3);
+    isolation:isolate; will-change:transform;
+  }
+  .shelf-search{ position:relative; margin-bottom:14px; }
+  .shelf-search input{
+    width:100%; background:var(--bg-alt2); border:2px solid #3A2A4A; border-radius:12px;
+    color:var(--cream); font-family:'Nunito',sans-serif; font-weight:700; font-size:0.95rem;
+    padding:12px 16px 12px 40px; outline:none; transition:border-color 0.15s ease;
+  }
+  .shelf-search input::placeholder{ color:var(--cream-dim); font-weight:600; }
+  .shelf-search input:focus{ border-color:var(--orange); }
+  .shelf-search .ico{ position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--cream-dim); }
+
+  .shelf-filter-row{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .shelf-filter-row + .shelf-filter-row{ margin-top:10px; padding-top:10px; border-top:1px solid #3A2A4A; }
+  .shelf-filter-label{ font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:var(--cream-dim); margin-right:4px; }
+  .shelf-chip{
+    font-size:0.76rem; font-weight:800; padding:7px 13px; border-radius:20px; border:2px solid transparent;
+    cursor:pointer; transition:all 0.15s ease; color:var(--cream); background:var(--bg-alt2);
+  }
+  .shelf-chip:hover{ transform:translateY(-1px); }
+  .shelf-chip.active{ border-color:var(--cream); }
+
+  .shelf-count{ text-align:center; color:var(--cream-dim); font-size:0.82rem; font-weight:700; margin-bottom:14px; }
+
+  .shelf-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:14px; margin-bottom:8px; position:relative; z-index:0; }
+  .shelf-card{
+    background:var(--bg-alt); border-radius:14px; padding:16px; border-left:5px solid var(--orange);
+    display:flex; flex-direction:column; gap:8px;
+  }
+  .shelf-badges{ display:flex; flex-wrap:wrap; gap:6px; }
+  .shelf-badge{
+    display:inline-block; font-size:0.65rem; font-weight:800; text-transform:uppercase;
+    letter-spacing:0.5px; padding:3px 9px; border-radius:20px;
+  }
+  .shelf-badge.players{ background:var(--bg-alt2); color:var(--cream-dim); border:1px solid #3A2A4A; }
+  .shelf-badge.coop{ background:var(--green); color:#12241A; }
+  .shelf-name{ font-weight:900; font-size:1.02rem; line-height:1.3; margin:0; }
+  .shelf-details-toggle{
+    align-self:flex-start; background:none; border:none; color:var(--cream-dim);
+    font-family:'Nunito',sans-serif; font-weight:800; font-size:0.76rem; letter-spacing:0.3px;
+    cursor:pointer; padding:0; margin:-2px 0 0; display:flex; align-items:center; gap:4px;
+  }
+  .shelf-details-toggle:hover{ color:var(--yellow); }
+  .shelf-details-toggle .chevron{ display:inline-block; transition:transform 0.2s ease; font-size:0.7rem; }
+  .shelf-details-toggle[aria-expanded="true"] .chevron{ transform:rotate(180deg); }
+  .shelf-desc-wrap{ max-height:0; overflow:hidden; transition:max-height 0.25s ease; }
+  .shelf-desc-wrap[data-open="true"]{ max-height:400px; }
+  .shelf-desc{ color:var(--cream-dim); font-size:0.84rem; line-height:1.55; margin:0; padding-top:2px; }
+  .shelf-detail-meta{ display:flex; flex-wrap:wrap; gap:6px 12px; padding-top:4px; }
+  .shelf-detail-meta span{ font-size:0.74rem; font-weight:700; color:var(--cream-dim); white-space:nowrap; }
+  .shelf-detail-meta span strong{ color:var(--cream); font-weight:800; }
+  .shelf-price-row{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:auto; padding-top:4px; }
+  .shelf-price-tier{ background:var(--bg-alt2); border-radius:10px; padding:8px 6px; text-align:center; }
+  .shelf-price-tier .plabel{ font-size:0.6rem; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; color:var(--cream-dim); }
+  .shelf-price-tier .pval{ font-weight:900; font-size:0.98rem; margin-top:2px; color:var(--yellow); }
+  .shelf-quote-note{
+    background:var(--bg-alt2); border-radius:10px; padding:10px 12px; font-size:0.8rem;
+    color:var(--cream-dim); text-align:center; line-height:1.5; margin-top:auto;
+  }
+  .shelf-quote-note a{ color:var(--yellow); font-weight:800; text-decoration:none; }
+  .shelf-quote-note a:hover{ text-decoration:underline; }
+  .shelf-empty{ text-align:center; color:var(--cream-dim); padding:40px 16px; font-weight:700; }
+
+  @media (max-width:520px){
+    .shelf-toolbar{ position:static; }
+    .shelf-price-tier .pval{ font-size:0.88rem; }
+  }
 </style>
 </head>
 <body>
@@ -194,8 +269,9 @@
     <p>Find Your Group's Player Type</p>
   </div>
 
-  <div style="text-align:center;font-size:0.8rem;font-weight:700;margin-bottom:16px;">
+  <div style="text-align:center;font-size:0.8rem;font-weight:700;margin-bottom:16px;display:flex;flex-wrap:wrap;justify-content:center;gap:6px 16px;">
     <a href="https://tabletopgamestogo.github.io/ttg-quiz/rental-terms.html" style="color:var(--cream-dim);text-decoration:none;">Curious about our rental terms? →</a>
+    <a href="#shelf" style="color:var(--cream-dim);text-decoration:none;">Browse the whole shelf ↓</a>
   </div>
 
   <div class="card">
@@ -236,6 +312,27 @@
   </div>
 </div>
 
+<div class="shelf" id="shelf">
+  <div class="shelf-head">
+    <h2>Browse the Shelf</h2>
+    <p>Every title we carry, with rates for 1, 2, and 3-day rentals — search by name, filter by category, or narrow to Cooperative vs. Competitive.</p>
+  </div>
+
+  <div class="shelf-toolbar">
+    <div class="shelf-search">
+      <span class="ico">🔍</span>
+      <input type="text" id="shelf-search-input" placeholder="Search for a game..." autocomplete="off">
+    </div>
+    <div class="shelf-filter-row" id="shelf-cat-chips"></div>
+    <div class="shelf-filter-row" id="shelf-mode-chips"></div>
+  </div>
+
+  <div class="shelf-count" id="shelf-count"></div>
+  <div class="shelf-grid" id="shelf-grid"></div>
+  <div class="shelf-empty" id="shelf-empty" style="display:none;">No games match your search — try a different title or filter, or <a href="#" style="color:var(--yellow);font-weight:800;" onclick="document.getElementById('shelf-search-input').value='';document.getElementById('shelf-search-input').dispatchEvent(new Event('input'));return false;">clear your search</a>.</div>
+</div>
+
+<script src="board-games-data.js"></script>
 <script src="quiz-engine.js"></script>
 <script>
 // ---------- QUESTIONS ----------
@@ -572,6 +669,157 @@ function restartQuiz(){
   currentIdx = 0;
   renderProgress();
 }
+
+// ---------- SHELF — full catalog browser + rates, data shared with game-rates.html
+// via board-games-data.js. ----------
+const SHELF_GAMES = BoardGamesData.BOARD_GAMES;
+const SHELF_CAT_COLORS = BoardGamesData.CATEGORY_COLORS;
+const SHELF_CATEGORIES = Object.keys(SHELF_CAT_COLORS);
+const SHELF_MODES = ['Cooperative', 'Competitive'];
+
+let shelfCategory = 'All';
+let shelfMode = 'All';
+let shelfSearch = '';
+
+function shelfFormatPeso(n){
+  return "₱" + n.toLocaleString("en-PH");
+}
+
+function renderShelfCatChips(){
+  const wrap = document.getElementById('shelf-cat-chips');
+  wrap.innerHTML = '';
+  const label = document.createElement('span');
+  label.className = 'shelf-filter-label';
+  label.textContent = 'Category';
+  wrap.appendChild(label);
+
+  const allChip = document.createElement('button');
+  allChip.className = 'shelf-chip' + (shelfCategory === 'All' ? ' active' : '');
+  allChip.textContent = 'All';
+  allChip.style.background = 'var(--bg-alt2)';
+  allChip.onclick = () => { shelfCategory = 'All'; renderShelfCatChips(); renderShelfGrid(); };
+  wrap.appendChild(allChip);
+
+  SHELF_CATEGORIES.forEach(cat => {
+    const c = SHELF_CAT_COLORS[cat];
+    const chip = document.createElement('button');
+    chip.className = 'shelf-chip' + (shelfCategory === cat ? ' active' : '');
+    chip.textContent = cat;
+    chip.style.background = c.bg;
+    chip.style.color = c.fg;
+    chip.onclick = () => { shelfCategory = cat; renderShelfCatChips(); renderShelfGrid(); };
+    wrap.appendChild(chip);
+  });
+}
+
+function renderShelfModeChips(){
+  const wrap = document.getElementById('shelf-mode-chips');
+  wrap.innerHTML = '';
+  const label = document.createElement('span');
+  label.className = 'shelf-filter-label';
+  label.textContent = 'Play style';
+  wrap.appendChild(label);
+
+  const allChip = document.createElement('button');
+  allChip.className = 'shelf-chip' + (shelfMode === 'All' ? ' active' : '');
+  allChip.textContent = 'All';
+  allChip.style.background = 'var(--bg-alt2)';
+  allChip.onclick = () => { shelfMode = 'All'; renderShelfModeChips(); renderShelfGrid(); };
+  wrap.appendChild(allChip);
+
+  SHELF_MODES.forEach(mode => {
+    const chip = document.createElement('button');
+    chip.className = 'shelf-chip' + (shelfMode === mode ? ' active' : '');
+    chip.textContent = mode;
+    chip.style.background = mode === 'Cooperative' ? 'var(--green)' : 'var(--bg-alt2)';
+    chip.style.color = mode === 'Cooperative' ? '#12241A' : 'var(--cream)';
+    chip.onclick = () => { shelfMode = mode; renderShelfModeChips(); renderShelfGrid(); };
+    wrap.appendChild(chip);
+  });
+}
+
+function renderShelfGrid(){
+  const grid = document.getElementById('shelf-grid');
+  const empty = document.getElementById('shelf-empty');
+  const countEl = document.getElementById('shelf-count');
+  grid.innerHTML = '';
+
+  const term = shelfSearch.trim().toLowerCase();
+  const filtered = SHELF_GAMES.filter(g => {
+    const matchesCat = shelfCategory === 'All' || g.category === shelfCategory;
+    const matchesMode = shelfMode === 'All' || g.mode === shelfMode;
+    const matchesSearch = !term || g.name.toLowerCase().includes(term);
+    return matchesCat && matchesMode && matchesSearch;
+  });
+
+  countEl.textContent = filtered.length + (filtered.length === 1 ? ' game' : ' games') +
+    (shelfCategory !== 'All' ? ' in ' + shelfCategory : '') +
+    (shelfMode !== 'All' ? ' · ' + shelfMode : '');
+
+  if(!filtered.length){
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  filtered.forEach(g => {
+    const c = SHELF_CAT_COLORS[g.category] || SHELF_CAT_COLORS["Uncategorized / New Arrival"];
+    const card = document.createElement('div');
+    card.className = 'shelf-card';
+    card.style.borderLeftColor = c.bg;
+
+    const hasRate = g.d1 > 0 || g.d2 > 0 || g.d3 > 0;
+
+    card.innerHTML = `
+      <div class="shelf-badges">
+        <span class="shelf-badge" style="background:${c.bg};color:${c.fg};">${g.category}</span>
+        ${g.players ? '<span class="shelf-badge players">' + g.players + '</span>' : ''}
+        ${g.mode === 'Cooperative' ? '<span class="shelf-badge coop">Cooperative</span>' : ''}
+      </div>
+      <p class="shelf-name">${g.name}</p>
+      ${g.description ? `
+        <button class="shelf-details-toggle" aria-expanded="false"><span class="chevron">▾</span> Details</button>
+        <div class="shelf-desc-wrap" data-open="false">
+          ${(g.durationExperience || g.gameType || g.playerType) ? `<div class="shelf-detail-meta">
+            ${g.durationExperience ? `<span>⏱ <strong>${g.durationExperience}</strong></span>` : ''}
+            ${g.gameType ? `<span>🎲 <strong>${g.gameType}</strong></span>` : ''}
+            ${g.playerType ? `<span>🎭 Best fit for <strong>${g.playerType}</strong></span>` : ''}
+          </div>` : ''}
+          <p class="shelf-desc">${g.description}</p>
+        </div>
+      ` : ''}
+      ${hasRate ? `
+        <div class="shelf-price-row">
+          <div class="shelf-price-tier"><div class="plabel">1 Day</div><div class="pval">${shelfFormatPeso(g.d1)}</div></div>
+          <div class="shelf-price-tier"><div class="plabel">2 Days</div><div class="pval">${shelfFormatPeso(g.d2)}</div></div>
+          <div class="shelf-price-tier"><div class="plabel">3 Days</div><div class="pval">${shelfFormatPeso(g.d3)}</div></div>
+        </div>
+      ` : `
+        <div class="shelf-quote-note">Not yet priced individually — <a href="https://www.facebook.com/tabletopgamestogo" target="_blank" rel="noopener">message us for a quote →</a></div>
+      `}
+    `;
+    grid.appendChild(card);
+  });
+}
+
+document.getElementById('shelf-search-input').addEventListener('input', (e) => {
+  shelfSearch = e.target.value;
+  renderShelfGrid();
+});
+
+// Delegated so it keeps working after renderShelfGrid() replaces the cards' innerHTML.
+document.getElementById('shelf-grid').addEventListener('click', (e) => {
+  const btn = e.target.closest('.shelf-details-toggle');
+  if(!btn) return;
+  const wrap = btn.nextElementSibling;
+  const isOpen = wrap.getAttribute('data-open') === 'true';
+  wrap.setAttribute('data-open', String(!isOpen));
+  btn.setAttribute('aria-expanded', String(!isOpen));
+});
+
+renderShelfCatChips();
+renderShelfModeChips();
+renderShelfGrid();
 
 renderProgress();
 </script>

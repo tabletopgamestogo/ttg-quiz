@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Individual Board Game Rates — TableTop Games To Go</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#18101F;
+    --bg-alt:#241A30;
+    --bg-alt2:#2E2039;
+    --cream:#F7F1E6;
+    --cream-dim:#C9BEDA;
+    --red:#E6394A;
+    --orange:#F4A259;
+    --yellow:#FFD23F;
+    --green:#4FB477;
+    --purple:#9B5DE5;
+    --muted:#8C7FA0;
+    --radius:18px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(circle at 20% 0%, #2A1D38 0%, var(--bg) 55%);
+    color:var(--cream);
+    font-family:'Nunito',sans-serif;
+    min-height:100vh;
+    padding:32px 16px 64px;
+  }
+  .app{ width:100%; max-width:920px; margin:0 auto; }
+
+  .brand{ text-align:center; margin-bottom:22px; }
+  .brand .dice-row{ display:flex; justify-content:center; gap:8px; margin-bottom:10px; }
+  .brand h1{
+    font-family:'Bungee',cursive; font-size:1.5rem; letter-spacing:0.5px; margin:0; line-height:1.25;
+    background:linear-gradient(90deg,var(--yellow),var(--orange),var(--red));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .brand p{ margin:8px 0 0; color:var(--cream-dim); font-weight:700; font-size:0.95rem; }
+  .back-links{ display:flex; flex-wrap:wrap; justify-content:center; gap:6px 16px; margin-bottom:18px; }
+  .back-links a{ color:var(--cream-dim); font-size:0.85rem; font-weight:700; text-decoration:none; }
+  .back-links a:hover{ color:var(--yellow); }
+
+  .hero{
+    background:var(--bg-alt); border:1px solid #3A2A4A; border-radius:var(--radius);
+    padding:28px 24px; text-align:center; margin-bottom:20px; box-shadow:0 20px 50px rgba(0,0,0,0.35);
+  }
+  .hero h2{ font-family:'Bungee',cursive; font-size:1.3rem; line-height:1.5; margin:0 0 10px; }
+  .hero p{ color:var(--cream-dim); font-size:0.92rem; line-height:1.6; margin:0 0 14px; }
+  .hero p:last-child{ margin-bottom:0; }
+  .hero .quote-link{ color:var(--yellow); font-weight:800; text-decoration:none; }
+  .hero .quote-link:hover{ text-decoration:underline; }
+
+  .btn-row{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+  .btn-primary{
+    display:inline-block; background:linear-gradient(90deg,var(--red),var(--orange)); color:#1A1220;
+    font-family:'Bungee',cursive; font-size:0.8rem; letter-spacing:0.5px; text-decoration:none;
+    padding:14px 22px; border-radius:12px; transition:transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 8px 18px rgba(230,57,74,0.35); }
+  .btn-social{
+    display:inline-block; background:var(--bg-alt2); border:2px solid #3A2A4A; color:var(--cream);
+    font-weight:800; font-size:0.82rem; text-decoration:none; padding:12px 18px; border-radius:12px;
+    transition:all 0.15s ease;
+  }
+  .btn-social:hover{ border-color:var(--orange); transform:translateY(-1px); }
+
+  .toolbar{
+    background:var(--bg-alt); border:1px solid #3A2A4A; border-radius:var(--radius);
+    padding:18px 20px; margin-bottom:18px;
+    box-shadow:0 12px 30px rgba(0,0,0,0.3);
+  }
+  .search-wrap{ position:relative; margin-bottom:14px; }
+  .search-wrap input{
+    width:100%; background:var(--bg-alt2); border:2px solid #3A2A4A; border-radius:12px;
+    color:var(--cream); font-family:'Nunito',sans-serif; font-weight:700; font-size:0.95rem;
+    padding:12px 16px 12px 40px; outline:none; transition:border-color 0.15s ease;
+  }
+  .search-wrap input::placeholder{ color:var(--cream-dim); font-weight:600; }
+  .search-wrap input:focus{ border-color:var(--orange); }
+  .search-wrap .ico{ position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--cream-dim); }
+  .cat-chips{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .cat-chips + .cat-chips{ margin-top:10px; padding-top:10px; border-top:1px solid #3A2A4A; }
+  .filter-label{ font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:var(--cream-dim); margin-right:4px; }
+  .cat-chip{
+    font-size:0.76rem; font-weight:800; padding:7px 13px; border-radius:20px; border:2px solid transparent;
+    cursor:pointer; transition:all 0.15s ease; color:var(--cream); background:var(--bg-alt2);
+  }
+  .cat-chip:hover{ transform:translateY(-1px); }
+  .cat-chip.active{ border-color:var(--cream); }
+  .result-count{ text-align:center; color:var(--cream-dim); font-size:0.82rem; font-weight:700; margin-bottom:14px; }
+
+  .badge{
+    display:inline-block; font-size:0.65rem; font-weight:800; text-transform:uppercase;
+    letter-spacing:0.5px; padding:3px 9px; border-radius:12px; line-height:1.4;
+  }
+
+  .rate-table-wrap{
+    overflow:auto; max-height:min(640px, 65vh); background:var(--bg-alt); border:1px solid #3A2A4A; border-radius:var(--radius);
+    margin-bottom:26px; position:relative; z-index:0;
+  }
+  table.rate-table{ width:100%; min-width:860px; border-collapse:separate; border-spacing:0; font-size:0.87rem; table-layout:fixed; }
+  table.rate-table th{
+    text-align:left; padding:12px 14px; border-bottom:1px solid #3A2A4A; background:var(--bg-alt2);
+    color:var(--cream); font-weight:800; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.5px;
+    white-space:nowrap;
+    position:sticky; top:0; z-index:4;
+    isolation:isolate; will-change:transform;
+  }
+  table.rate-table th.tnum{ text-align:right; }
+  table.rate-table td{ padding:11px 14px; border-bottom:1px solid #3A2A4A; color:var(--cream-dim); vertical-align:middle; }
+  table.rate-table tbody tr:last-child td{ border-bottom:none; }
+  table.rate-table tbody tr:hover td{ background:var(--bg-alt2); }
+  table.rate-table td.gname{ color:var(--cream); font-weight:800; }
+  table.rate-table td.players{ font-size:0.82rem; }
+  table.rate-table td.ptype{ font-size:0.82rem; }
+  .badge.duration-light{ background:var(--green); color:#12241A; }
+  .badge.duration-medium{ background:var(--orange); color:#1A1220; }
+  .badge.duration-heavy{ background:var(--red); color:var(--cream); }
+  table.rate-table td.tnum{ text-align:right; font-weight:900; color:var(--yellow); white-space:nowrap; font-variant-numeric:tabular-nums; }
+  table.rate-table td.quote-cell{ color:var(--cream-dim); font-size:0.85rem; }
+  table.rate-table td.quote-cell a{ color:var(--yellow); font-weight:800; text-decoration:none; }
+  table.rate-table td.quote-cell a:hover{ text-decoration:underline; }
+
+  .detail-toggle{
+    display:inline-flex; align-items:center; gap:3px; background:none; border:none; cursor:pointer;
+    color:var(--cream-dim); font-family:'Nunito',sans-serif; font-weight:800; font-size:0.7rem;
+    padding:0; margin-left:8px; vertical-align:middle;
+  }
+  .detail-toggle:hover{ color:var(--yellow); }
+  .detail-toggle .chevron{ display:inline-block; transition:transform 0.2s ease; font-size:0.65rem; }
+  .detail-toggle[aria-expanded="true"] .chevron{ transform:rotate(180deg); }
+  tr.detail-row td{
+    padding:10px 14px 16px 14px; border-bottom:1px solid #3A2A4A; background:var(--bg-alt);
+    color:var(--cream-dim); font-size:0.85rem; line-height:1.6; white-space:normal;
+  }
+  tr.detail-row:last-child td{ border-bottom:none; }
+  .detail-meta{ display:flex; flex-wrap:wrap; gap:6px 14px; margin-bottom:8px; }
+  .detail-meta span{
+    font-size:0.76rem; font-weight:700; color:var(--cream-dim); white-space:nowrap;
+  }
+  .detail-meta span strong{ color:var(--cream); font-weight:800; }
+
+  .empty-state{ text-align:center; color:var(--cream-dim); padding:40px 16px; font-weight:700; }
+
+  .note-box{
+    background:var(--bg-alt); border:1px solid #3A2A4A; border-radius:var(--radius);
+    padding:18px 20px; margin-bottom:18px; font-size:0.85rem; color:var(--cream-dim); line-height:1.6;
+    border-left:4px solid var(--purple);
+  }
+
+  .footer-cta{
+    background:var(--bg-alt); border:1px solid #3A2A4A; border-radius:var(--radius);
+    padding:26px 22px; text-align:center;
+  }
+  .footer-cta h3{ font-family:'Bungee',cursive; font-size:1.05rem; margin:0 0 10px; }
+  .footer-cta p{ color:var(--cream-dim); font-size:0.88rem; line-height:1.6; margin:0 0 16px; }
+  .legal-note{ margin-top:18px; font-size:0.76rem; color:var(--muted); line-height:1.6; }
+
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="brand">
+    <div class="dice-row">
+      <svg width="18" height="18" viewBox="0 0 18 18"><rect width="18" height="18" rx="4" fill="#E6394A"/></svg>
+      <svg width="18" height="18" viewBox="0 0 18 18"><rect width="18" height="18" rx="4" fill="#FFD23F"/></svg>
+      <svg width="18" height="18" viewBox="0 0 18 18"><rect width="18" height="18" rx="4" fill="#4FB477"/></svg>
+    </div>
+    <h1>TABLETOP GAMES TO GO</h1>
+    <p>Individual Board Game Rates</p>
+  </div>
+  <div class="back-links">
+    <a href="index.html">← Not sure what to rent? Take the quiz</a>
+    <a href="rental-terms.html">Rental terms &amp; policies →</a>
+  </div>
+
+  <div class="hero">
+    <h2>Renting a Game or Two, À La Carte</h2>
+    <p>Prices below are per game, in ₱, for 1, 2, or 3-day rentals — handy if you already know what you want instead of booking a full package. Search or filter by category to find it fast.</p>
+    <p>Renting several titles at once, or want a Game Master to teach and run the night? <a class="quote-link" href="rental-terms.html">See how our packages &amp; rates work →</a></p>
+  </div>
+
+  <div class="toolbar">
+    <div class="search-wrap">
+      <span class="ico">🔍</span>
+      <input type="text" id="search-input" placeholder="Search for a game..." autocomplete="off">
+    </div>
+    <div class="cat-chips" id="cat-chips"></div>
+    <div class="cat-chips" id="ptype-chips"></div>
+    <div class="cat-chips" id="duration-chips"></div>
+  </div>
+
+  <div class="result-count" id="result-count"></div>
+  <div class="rate-table-wrap">
+    <table class="rate-table">
+      <colgroup>
+        <col style="width:16%">
+        <col style="width:19%">
+        <col style="width:11%">
+        <col style="width:11%">
+        <col style="width:10%">
+        <col style="width:11%">
+        <col style="width:11%">
+        <col style="width:11%">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Game</th>
+          <th>Players</th>
+          <th>Player Type</th>
+          <th>Duration</th>
+          <th class="tnum">1 Day</th>
+          <th class="tnum">2 Days</th>
+          <th class="tnum">3 Days</th>
+        </tr>
+      </thead>
+      <tbody id="rate-tbody"></tbody>
+    </table>
+  </div>
+  <div class="empty-state" id="empty-state" style="display:none;">No games match your search — try a different title or category, or <a href="#" style="color:var(--yellow);font-weight:800;" onclick="document.getElementById('search-input').value='';document.getElementById('search-input').dispatchEvent(new Event('input'));return false;">clear your search</a>.</div>
+
+  <div class="note-box">
+    Rates with no price yet are marked "Ask us for a quote" — usually a bundle or a brand-new arrival we haven't priced individually. Message us and we'll confirm the rate.
+  </div>
+
+  <div class="footer-cta">
+    <h3>Ready to Book?</h3>
+    <p>Message us on Facebook, Instagram, or TikTok, or fill out our booking form directly and we'll bring the games to you.</p>
+    <div class="btn-row">
+      <a class="btn-primary" data-href-field="bookingFormUrl" href="#" target="_blank" rel="noopener">BOOK A RENTAL →</a>
+    </div>
+    <div class="btn-row" style="margin-top:12px;">
+      <a class="btn-social" data-href-field="facebookUrl" href="#" target="_blank" rel="noopener">Facebook</a>
+      <a class="btn-social" data-href-field="instagramUrl" href="#" target="_blank" rel="noopener">Instagram</a>
+      <a class="btn-social" data-href-field="tiktokUrl" href="#" target="_blank" rel="noopener">TikTok</a>
+    </div>
+    <div class="legal-note">Rates shown are for the game only. See our <a href="rental-terms.html" style="color:var(--muted);">Rental Terms &amp; Policies</a> for deposits, delivery, and Game Master add-ons.</div>
+  </div>
+
+</div>
+<script src="site-config.js"></script>
+<script src="board-games-data.js"></script>
+<script>
+// ---------- DATA — shared with index.html via board-games-data.js. ----------
+const RATES = BoardGamesData.BOARD_GAMES;
+const CAT_COLORS = BoardGamesData.CATEGORY_COLORS;
+const CATEGORIES = Object.keys(CAT_COLORS);
+// Same palette as the quiz's four archetypes (index.html's dieColors) so the two pages read as one system.
+const PTYPE_COLORS = {
+  "The Architects":   {bg:"#9B5DE5", fg:"#F7F1E6"},
+  "The Conquerors":   {bg:"#E6394A", fg:"#F7F1E6"},
+  "The Dreamweavers": {bg:"#4FB477", fg:"#12241A"},
+  "The Connectors":   {bg:"#FFD23F", fg:"#1A1220"},
+};
+const PLAYER_TYPES = Object.keys(PTYPE_COLORS);
+const DURATION_COLORS = {
+  "Light":  {bg:"#4FB477", fg:"#12241A"},
+  "Medium": {bg:"#F4A259", fg:"#1A1220"},
+  "Heavy":  {bg:"#E6394A", fg:"#F7F1E6"},
+};
+const DURATIONS = Object.keys(DURATION_COLORS);
+// ---------- STATE ----------
+let activeCategory = "All";
+let activePlayerType = "All";
+let activeDuration = "All";
+let searchTerm = "";
+const expandedGames = new Set(); // game names with their detail row open, persists across re-filters
+
+function formatPeso(n){
+  return "₱" + n.toLocaleString("en-PH");
+}
+
+function renderChips(){
+  const wrap = document.getElementById('cat-chips');
+  wrap.innerHTML = '';
+  const label = document.createElement('span');
+  label.className = 'filter-label';
+  label.textContent = 'Category';
+  wrap.appendChild(label);
+
+  const allChip = document.createElement('button');
+  allChip.className = 'cat-chip' + (activeCategory === 'All' ? ' active' : '');
+  allChip.textContent = 'All Games';
+  allChip.style.background = 'var(--bg-alt2)';
+  allChip.onclick = () => { activeCategory = 'All'; renderChips(); renderGrid(); };
+  wrap.appendChild(allChip);
+
+  CATEGORIES.forEach(cat => {
+    const c = CAT_COLORS[cat];
+    const chip = document.createElement('button');
+    chip.className = 'cat-chip' + (activeCategory === cat ? ' active' : '');
+    chip.textContent = cat;
+    chip.style.background = c.bg;
+    chip.style.color = c.fg;
+    chip.onclick = () => { activeCategory = cat; renderChips(); renderGrid(); };
+    wrap.appendChild(chip);
+  });
+}
+
+function renderPlayerTypeChips(){
+  const wrap = document.getElementById('ptype-chips');
+  wrap.innerHTML = '';
+  const label = document.createElement('span');
+  label.className = 'filter-label';
+  label.textContent = 'Player Type';
+  wrap.appendChild(label);
+
+  const allChip = document.createElement('button');
+  allChip.className = 'cat-chip' + (activePlayerType === 'All' ? ' active' : '');
+  allChip.textContent = 'All';
+  allChip.style.background = 'var(--bg-alt2)';
+  allChip.onclick = () => { activePlayerType = 'All'; renderPlayerTypeChips(); renderGrid(); };
+  wrap.appendChild(allChip);
+
+  PLAYER_TYPES.forEach(pt => {
+    const c = PTYPE_COLORS[pt];
+    const chip = document.createElement('button');
+    chip.className = 'cat-chip' + (activePlayerType === pt ? ' active' : '');
+    chip.textContent = pt;
+    chip.style.background = c.bg;
+    chip.style.color = c.fg;
+    chip.onclick = () => { activePlayerType = pt; renderPlayerTypeChips(); renderGrid(); };
+    wrap.appendChild(chip);
+  });
+}
+
+function renderDurationChips(){
+  const wrap = document.getElementById('duration-chips');
+  wrap.innerHTML = '';
+  const label = document.createElement('span');
+  label.className = 'filter-label';
+  label.textContent = 'Duration';
+  wrap.appendChild(label);
+
+  const allChip = document.createElement('button');
+  allChip.className = 'cat-chip' + (activeDuration === 'All' ? ' active' : '');
+  allChip.textContent = 'All';
+  allChip.style.background = 'var(--bg-alt2)';
+  allChip.onclick = () => { activeDuration = 'All'; renderDurationChips(); renderGrid(); };
+  wrap.appendChild(allChip);
+
+  DURATIONS.forEach(d => {
+    const c = DURATION_COLORS[d];
+    const chip = document.createElement('button');
+    chip.className = 'cat-chip' + (activeDuration === d ? ' active' : '');
+    chip.textContent = d;
+    chip.style.background = c.bg;
+    chip.style.color = c.fg;
+    chip.onclick = () => { activeDuration = d; renderDurationChips(); renderGrid(); };
+    wrap.appendChild(chip);
+  });
+}
+
+function renderGrid(){
+  const tbody = document.getElementById('rate-tbody');
+  const empty = document.getElementById('empty-state');
+  const countEl = document.getElementById('result-count');
+  tbody.innerHTML = '';
+
+  const term = searchTerm.trim().toLowerCase();
+  const filtered = RATES.filter(g => {
+    const matchesCat = activeCategory === 'All' || g.category === activeCategory;
+    const matchesPType = activePlayerType === 'All' || g.playerType === activePlayerType;
+    const matchesDuration = activeDuration === 'All' || g.tgtgDuration === activeDuration;
+    const matchesSearch = !term || g.name.toLowerCase().includes(term);
+    return matchesCat && matchesPType && matchesDuration && matchesSearch;
+  });
+
+  const filterBits = [
+    activeCategory !== 'All' ? activeCategory : '',
+    activePlayerType !== 'All' ? activePlayerType : '',
+    activeDuration !== 'All' ? activeDuration + ' duration' : '',
+  ].filter(Boolean);
+  countEl.textContent = filtered.length + (filtered.length === 1 ? ' game' : ' games') +
+    (filterBits.length ? ' — ' + filterBits.join(', ') : '');
+
+  if(!filtered.length){
+    empty.style.display = 'block';
+    document.querySelector('.rate-table-wrap').style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none';
+  document.querySelector('.rate-table-wrap').style.display = '';
+
+  filtered.forEach(g => {
+    const c = CAT_COLORS[g.category] || CAT_COLORS["Uncategorized / New Arrival"];
+    const row = document.createElement('tr');
+
+    const hasRate = g.d1 > 0 || g.d2 > 0 || g.d3 > 0;
+    const isOpen = expandedGames.has(g.name);
+
+    row.innerHTML = `
+      <td><span class="badge" style="background:${c.bg};color:${c.fg};">${g.category}</span></td>
+      <td class="gname">${g.name}${g.description ? `
+        <button class="detail-toggle" data-name="${g.name.replace(/"/g, '&quot;')}" aria-expanded="${isOpen}">
+          <span class="chevron">▾</span> Details
+        </button>
+      ` : ''}</td>
+      <td class="players">${g.players || '—'}</td>
+      <td class="ptype">${g.playerType || '—'}</td>
+      <td>${g.tgtgDuration ? `<span class="badge duration-${g.tgtgDuration.toLowerCase()}">${g.tgtgDuration}</span>` : '—'}</td>
+      ${hasRate ? `
+        <td class="tnum">${formatPeso(g.d1)}</td>
+        <td class="tnum">${formatPeso(g.d2)}</td>
+        <td class="tnum">${formatPeso(g.d3)}</td>
+      ` : `
+        <td class="quote-cell" colspan="3">Not yet priced individually — <a data-href-field="facebookUrl" href="#" target="_blank" rel="noopener">message us for a quote →</a></td>
+      `}
+    `;
+    tbody.appendChild(row);
+
+    if (g.description && isOpen) {
+      const detailRow = document.createElement('tr');
+      detailRow.className = 'detail-row';
+      const meta = [
+        g.durationExperience ? `<span>⏱ <strong>${g.durationExperience}</strong></span>` : '',
+        g.gameType ? `<span>🎲 <strong>${g.gameType}</strong></span>` : '',
+      ].filter(Boolean).join('');
+      detailRow.innerHTML = `<td colspan="8">${meta ? `<div class="detail-meta">${meta}</div>` : ''}${g.description}</td>`;
+      tbody.appendChild(detailRow);
+    }
+  });
+
+  SiteConfig.applySiteConfig(document, SiteConfig.SITE);
+}
+
+// Delegated so it keeps working after renderGrid() replaces the rows.
+document.getElementById('rate-tbody').addEventListener('click', (e) => {
+  const btn = e.target.closest('.detail-toggle');
+  if (!btn) return;
+  const name = btn.dataset.name;
+  if (expandedGames.has(name)) expandedGames.delete(name);
+  else expandedGames.add(name);
+  renderGrid();
+});
+
+document.getElementById('search-input').addEventListener('input', (e) => {
+  searchTerm = e.target.value;
+  renderGrid();
+});
+
+SiteConfig.applySiteConfig(document, SiteConfig.SITE);
+renderChips();
+renderPlayerTypeChips();
+renderDurationChips();
+renderGrid();
+</script>
+</body>
+</html>

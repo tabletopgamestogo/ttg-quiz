@@ -84,7 +84,14 @@
   .search-wrap .ico{ position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--cream-dim); }
   .cat-chips{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
   .cat-chips + .cat-chips{ margin-top:10px; padding-top:10px; border-top:1px solid #3A2A4A; }
-  .filter-label{ font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:var(--cream-dim); margin-right:4px; }
+  .filter-label{ font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:var(--cream-dim); margin-right:2px; display:inline-flex; align-items:center; gap:5px; }
+  .info-btn{
+    width:16px; height:16px; border-radius:50%; background:var(--bg-alt2); border:1px solid var(--muted);
+    color:var(--cream-dim); font-family:'Nunito',sans-serif; font-size:0.62rem; font-weight:900;
+    display:inline-flex; align-items:center; justify-content:center; cursor:pointer; line-height:1;
+    padding:0; margin-right:4px; flex-shrink:0; transition:all 0.15s ease;
+  }
+  .info-btn:hover{ border-color:var(--yellow); color:var(--yellow); }
   .cat-chip{
     font-size:0.76rem; font-weight:800; padding:7px 13px; border-radius:20px; border:2px solid transparent;
     cursor:pointer; transition:all 0.15s ease; color:var(--cream); background:var(--bg-alt2);
@@ -159,6 +166,27 @@
   .footer-cta h3{ font-family:'Bungee',cursive; font-size:1.05rem; margin:0 0 10px; }
   .footer-cta p{ color:var(--cream-dim); font-size:0.88rem; line-height:1.6; margin:0 0 16px; }
   .legal-note{ margin-top:18px; font-size:0.76rem; color:var(--muted); line-height:1.6; }
+
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(10,6,14,0.72); display:flex; align-items:center;
+    justify-content:center; z-index:50; padding:20px;
+  }
+  .modal-card{
+    background:var(--bg-alt); border:1px solid #3A2A4A; border-radius:var(--radius); max-width:480px;
+    width:100%; max-height:80vh; overflow:auto; padding:24px; box-shadow:0 30px 70px rgba(0,0,0,0.5);
+  }
+  .modal-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+  .modal-card h3{ font-family:'Bungee',cursive; font-size:1.05rem; margin:0 0 4px; }
+  .modal-sub{ color:var(--cream-dim); font-size:0.82rem; margin:0; line-height:1.5; }
+  .modal-close{
+    background:none; border:none; color:var(--cream-dim); font-size:1.5rem; cursor:pointer;
+    line-height:1; padding:0 0 0 8px; flex-shrink:0;
+  }
+  .modal-close:hover{ color:var(--yellow); }
+  .glossary-item{ display:flex; align-items:flex-start; gap:12px; padding:12px 0; border-top:1px solid #3A2A4A; }
+  .glossary-item:first-child{ border-top:none; padding-top:16px; }
+  .glossary-item .g-badge{ flex-shrink:0; margin-top:1px; }
+  .glossary-item .g-desc{ color:var(--cream-dim); font-size:0.83rem; line-height:1.55; }
 
 </style>
 </head>
@@ -242,6 +270,19 @@
     <div class="legal-note">Rates shown are for the game only. See our <a href="rental-terms.html" style="color:var(--muted);">Rental Terms &amp; Policies</a> for deposits, delivery, and Game Master add-ons.</div>
   </div>
 
+  <div class="modal-overlay" id="glossary-modal" style="display:none;" onclick="if(event.target===this) closeGlossary();">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <h3 id="glossary-title"></h3>
+          <p class="modal-sub" id="glossary-sub"></p>
+        </div>
+        <button class="modal-close" onclick="closeGlossary()" aria-label="Close">&times;</button>
+      </div>
+      <div id="glossary-list"></div>
+    </div>
+  </div>
+
 </div>
 <script src="site-config.js"></script>
 <script src="board-games-data.js"></script>
@@ -264,6 +305,63 @@ const DURATION_COLORS = {
   "Heavy":  {bg:"#E6394A", fg:"#F7F1E6"},
 };
 const DURATIONS = Object.keys(DURATION_COLORS);
+
+// ---------- GLOSSARY — plain-language meanings shown in the "i" popovers ----------
+const CATEGORY_DESCRIPTIONS = {
+  "Strategy Showcase":             "Meatier strategy games for players who like to plan several moves ahead.",
+  "Family & Accessible Strategy":  "Real strategic depth that's still easy to teach — great for mixed-experience groups.",
+  "Cooperative Missions":          "Everyone's on the same team, working together against the game itself.",
+  "Bluffing & Social Deduction":   "Reading the table, hiding your role, and calling out the liars.",
+  "Party & Group Fun":             "Loud, fast, and built for a crowd — the classic party-night pick.",
+  "Quick Card & Tabletop Fillers": "Short, low-fuss card and dice games — perfect for warming up or filling a gap.",
+  "Unmatched Battle Arena":        "Head-to-head tactical combat from the Unmatched series — pick a fighter and go to war.",
+};
+const PLAYER_TYPE_DESCRIPTIONS = {
+  "The Architects":   "Strategic planners who love a real system to master — they see three moves ahead.",
+  "The Conquerors":   "Competitive players who play to win and want the table to remember it.",
+  "The Dreamweavers": "Story-and-immersion players who want a game to feel like a world, not just a game.",
+  "The Connectors":   "Social players who show up for the people at the table as much as the game itself.",
+};
+const DURATION_DESCRIPTIONS = {
+  "Light":  "Quick and easy — the shortest, lowest-fuss games in our library.",
+  "Medium": "A solid middle ground — a bit more meat than a filler, still moves at a good pace.",
+  "Heavy":  "Our longest or most involved games — more rules, more depth, more table time.",
+};
+const GLOSSARY = {
+  category: {
+    title: "Categories",
+    sub: "What kind of game you're picking up.",
+    items: CATEGORIES.map(cat => ({ label: cat, color: CAT_COLORS[cat], desc: CATEGORY_DESCRIPTIONS[cat] })),
+  },
+  playerType: {
+    title: "Player Types",
+    sub: "Which of our four quiz archetypes a game fits best — take the quiz to find yours.",
+    items: PLAYER_TYPES.map(pt => ({ label: pt, color: PTYPE_COLORS[pt], desc: PLAYER_TYPE_DESCRIPTIONS[pt] })),
+  },
+  duration: {
+    title: "Duration",
+    sub: "How long a session tends to run.",
+    items: DURATIONS.map(d => ({ label: d, color: DURATION_COLORS[d], desc: DURATION_DESCRIPTIONS[d] })),
+  },
+};
+
+function openGlossary(key){
+  const g = GLOSSARY[key];
+  document.getElementById('glossary-title').textContent = g.title;
+  document.getElementById('glossary-sub').textContent = g.sub;
+  document.getElementById('glossary-list').innerHTML = g.items.map(it => `
+    <div class="glossary-item">
+      <span class="badge g-badge" style="background:${it.color.bg};color:${it.color.fg};">${it.label}</span>
+      <div class="g-desc">${it.desc}</div>
+    </div>
+  `).join('');
+  document.getElementById('glossary-modal').style.display = 'flex';
+}
+function closeGlossary(){
+  document.getElementById('glossary-modal').style.display = 'none';
+}
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeGlossary(); });
+
 // ---------- STATE ----------
 let activeCategory = "All";
 let activePlayerType = "All";
@@ -275,6 +373,16 @@ function formatPeso(n){
   return "₱" + n.toLocaleString("en-PH");
 }
 
+function makeInfoBtn(glossaryKey, ariaLabel){
+  const btn = document.createElement('button');
+  btn.className = 'info-btn';
+  btn.type = 'button';
+  btn.textContent = 'i';
+  btn.setAttribute('aria-label', ariaLabel);
+  btn.onclick = (e) => { e.stopPropagation(); openGlossary(glossaryKey); };
+  return btn;
+}
+
 function renderChips(){
   const wrap = document.getElementById('cat-chips');
   wrap.innerHTML = '';
@@ -282,6 +390,7 @@ function renderChips(){
   label.className = 'filter-label';
   label.textContent = 'Category';
   wrap.appendChild(label);
+  wrap.appendChild(makeInfoBtn('category', 'What do the categories mean?'));
 
   const allChip = document.createElement('button');
   allChip.className = 'cat-chip' + (activeCategory === 'All' ? ' active' : '');
@@ -309,6 +418,7 @@ function renderPlayerTypeChips(){
   label.className = 'filter-label';
   label.textContent = 'Player Type';
   wrap.appendChild(label);
+  wrap.appendChild(makeInfoBtn('playerType', 'What do the player types mean?'));
 
   const allChip = document.createElement('button');
   allChip.className = 'cat-chip' + (activePlayerType === 'All' ? ' active' : '');
@@ -336,6 +446,7 @@ function renderDurationChips(){
   label.className = 'filter-label';
   label.textContent = 'Duration';
   wrap.appendChild(label);
+  wrap.appendChild(makeInfoBtn('duration', 'What does duration mean?'));
 
   const allChip = document.createElement('button');
   allChip.className = 'cat-chip' + (activeDuration === 'All' ? ' active' : '');

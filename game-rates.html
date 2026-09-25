@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Individual Board Game Rates — TableTop Games To Go</title>
+<title>Rates — TableTop Games To Go</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -33,13 +33,8 @@
   .app{ width:100%; max-width:920px; margin:0 auto; }
 
   .brand{ text-align:center; margin-bottom:22px; }
-  .brand .dice-row{ display:flex; justify-content:center; gap:8px; margin-bottom:10px; }
-  .brand h1{
-    font-family:'Bungee',cursive; font-size:1.5rem; letter-spacing:0.5px; margin:0; line-height:1.25;
-    background:linear-gradient(90deg,var(--yellow),var(--orange),var(--red));
-    -webkit-background-clip:text; background-clip:text; color:transparent;
-  }
-  .brand p{ margin:8px 0 0; color:var(--cream-dim); font-weight:700; font-size:0.95rem; }
+  .brand-logo{ width:120px; height:auto; border-radius:20px; box-shadow:0 12px 30px rgba(0,0,0,0.4); }
+  .brand p{ margin:12px 0 0; color:var(--cream-dim); font-weight:700; font-size:0.95rem; }
   .back-links{ display:flex; flex-wrap:wrap; justify-content:center; gap:6px 16px; margin-bottom:18px; }
   .back-links a{ color:var(--cream-dim); font-size:0.85rem; font-weight:700; text-decoration:none; }
   .back-links a:hover{ color:var(--yellow); }
@@ -67,6 +62,42 @@
     transition:all 0.15s ease;
   }
   .btn-social:hover{ border-color:var(--orange); transform:translateY(-1px); }
+
+  .tab-bar{
+    display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:20px;
+  }
+  .tab-btn{
+    font-family:'Bungee',cursive; font-size:0.72rem; letter-spacing:0.3px; color:var(--cream-dim);
+    background:var(--bg-alt); border:2px solid #3A2A4A; border-radius:14px; padding:12px 16px;
+    cursor:pointer; transition:all 0.15s ease; line-height:1.3;
+  }
+  .tab-btn:hover{ border-color:var(--orange); color:var(--cream); }
+  .tab-btn.active{
+    background:linear-gradient(90deg,var(--red),var(--orange)); border-color:transparent; color:#1A1220;
+  }
+  .tab-panel{ display:none; }
+  .tab-panel.active{ display:block; }
+  .tab-intro{ color:var(--cream-dim); font-size:0.88rem; line-height:1.6; margin:0 0 16px; text-align:center; }
+
+  .package-card{
+    background:var(--bg-alt); border:1px solid #3A2A4A; border-radius:var(--radius);
+    padding:22px 22px; margin-bottom:16px;
+  }
+  .package-head{ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:10px; margin-bottom:12px; }
+  .package-head h3{ font-family:'Bungee',cursive; font-size:1rem; margin:0; color:var(--cream); }
+  .package-price{ font-family:'Bungee',cursive; font-size:1.1rem; color:var(--yellow); white-space:nowrap; }
+  .package-includes{ margin:0; padding-left:20px; color:var(--cream-dim); font-size:0.88rem; line-height:1.7; }
+  .package-includes li{ margin-bottom:4px; }
+
+  .coming-soon{
+    background:var(--bg-alt); border:1px dashed #4A3A5A; border-radius:var(--radius);
+    padding:44px 24px; text-align:center; margin-bottom:18px;
+  }
+  .coming-soon .icon{ font-size:2rem; margin-bottom:12px; }
+  .coming-soon h3{ font-family:'Bungee',cursive; font-size:1rem; margin:0 0 10px; color:var(--cream); }
+  .coming-soon p{ color:var(--cream-dim); font-size:0.88rem; line-height:1.65; margin:0 auto; max-width:420px; }
+  .coming-soon p a{ color:var(--yellow); font-weight:800; text-decoration:none; }
+  .coming-soon p a:hover{ text-decoration:underline; }
 
   .toolbar{
     background:var(--bg-alt); border:1px solid #3A2A4A; border-radius:var(--radius);
@@ -223,13 +254,8 @@
 <body>
 <div class="app">
   <div class="brand">
-    <div class="dice-row">
-      <svg width="18" height="18" viewBox="0 0 18 18"><rect width="18" height="18" rx="4" fill="#E6394A"/></svg>
-      <svg width="18" height="18" viewBox="0 0 18 18"><rect width="18" height="18" rx="4" fill="#FFD23F"/></svg>
-      <svg width="18" height="18" viewBox="0 0 18 18"><rect width="18" height="18" rx="4" fill="#4FB477"/></svg>
-    </div>
-    <h1>TABLETOP GAMES TO GO</h1>
-    <p>Individual Board Game Rates</p>
+    <img src="assets/logo.png" alt="Tabletop Games To Go" class="brand-logo">
+    <p>Rates &amp; Packages</p>
   </div>
   <div class="back-links">
     <a href="index.html" target="_blank" rel="noopener">← Not sure what to rent? Take the quiz</a>
@@ -237,58 +263,86 @@
   </div>
 
   <div class="hero">
-    <h2>Renting a Game or Two, À La Carte</h2>
-    <p>Prices below are per game, in ₱, for 1, 2, or 3-day rentals — handy if you already know what you want instead of booking a full package. Search or filter by category to find it fast.</p>
-    <p>Renting several titles at once, or want a Game Master to teach and run the night? <a class="quote-link" href="rental-terms.html" target="_blank" rel="noopener">See how our packages &amp; rates work →</a></p>
+    <h2>Rates</h2>
+    <p>Renting à la carte, booking a personal package, or planning something for your company — pick a tab below to see the rates that fit.</p>
+    <p>Curious how booking, deposits, and Game Masters work? <a class="quote-link" href="rental-terms.html" target="_blank" rel="noopener">See our Rental Terms &amp; Policies →</a></p>
   </div>
 
-  <div class="toolbar">
-    <div class="search-wrap">
-      <span class="ico">🔍</span>
-      <input type="text" id="search-input" placeholder="Search for a game..." autocomplete="off">
+  <div class="tab-bar" id="tab-bar">
+    <button class="tab-btn active" data-tab="individual">Individual Board Games</button>
+    <button class="tab-btn" data-tab="personal">Personal Packages</button>
+    <button class="tab-btn" data-tab="company">Company Packages</button>
+  </div>
+
+  <div class="tab-panel active" id="panel-individual">
+    <p class="tab-intro">Prices below are per game, in ₱, for 1, 2, or 3-day rentals — handy if you already know what you want instead of booking a full package. Search or filter by category to find it fast.</p>
+
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span class="ico">🔍</span>
+        <input type="text" id="search-input" placeholder="Search for a game..." autocomplete="off">
+      </div>
+      <div class="cat-chips" id="cat-chips"></div>
+      <div class="cat-chips" id="ptype-chips"></div>
+      <div class="cat-chips" id="duration-chips"></div>
     </div>
-    <div class="cat-chips" id="cat-chips"></div>
-    <div class="cat-chips" id="ptype-chips"></div>
-    <div class="cat-chips" id="duration-chips"></div>
-  </div>
 
-  <div class="result-count" id="result-count"></div>
-  <div class="scroll-hint" id="scroll-hint"><span class="arrow">↔</span> Scroll sideways to see all columns</div>
-  <div class="rate-table-outer">
-    <div class="rate-table-wrap" id="rate-table-wrap">
-      <table class="rate-table">
-        <colgroup>
-          <col style="width:16%">
-          <col style="width:19%">
-          <col style="width:11%">
-          <col style="width:11%">
-          <col style="width:10%">
-          <col style="width:11%">
-          <col style="width:11%">
-          <col style="width:11%">
-        </colgroup>
-        <thead>
-          <tr>
-            <th>Category</th>
-            <th>Game</th>
-            <th>Players</th>
-            <th>Player Type</th>
-            <th>Duration</th>
-            <th class="tnum">1 Day</th>
-            <th class="tnum">2 Days</th>
-            <th class="tnum">3 Days</th>
-          </tr>
-        </thead>
-        <tbody id="rate-tbody"></tbody>
-      </table>
+    <div class="result-count" id="result-count"></div>
+    <div class="scroll-hint" id="scroll-hint"><span class="arrow">↔</span> Scroll sideways to see all columns</div>
+    <div class="rate-table-outer">
+      <div class="rate-table-wrap" id="rate-table-wrap">
+        <table class="rate-table">
+          <colgroup>
+            <col style="width:16%">
+            <col style="width:19%">
+            <col style="width:11%">
+            <col style="width:11%">
+            <col style="width:10%">
+            <col style="width:11%">
+            <col style="width:11%">
+            <col style="width:11%">
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Game</th>
+              <th>Players</th>
+              <th>Player Type</th>
+              <th>Duration</th>
+              <th class="tnum">1 Day</th>
+              <th class="tnum">2 Days</th>
+              <th class="tnum">3 Days</th>
+            </tr>
+          </thead>
+          <tbody id="rate-tbody"></tbody>
+        </table>
+      </div>
+      <div class="scroll-fade scroll-fade-left" id="fade-left" aria-hidden="true"></div>
+      <div class="scroll-fade scroll-fade-right" id="fade-right" aria-hidden="true"></div>
     </div>
-    <div class="scroll-fade scroll-fade-left" id="fade-left" aria-hidden="true"></div>
-    <div class="scroll-fade scroll-fade-right" id="fade-right" aria-hidden="true"></div>
-  </div>
-  <div class="empty-state" id="empty-state" style="display:none;">No games match your search — try a different title or category, or <a href="#" style="color:var(--yellow);font-weight:800;" onclick="document.getElementById('search-input').value='';document.getElementById('search-input').dispatchEvent(new Event('input'));return false;">clear your search</a>.</div>
+    <div class="empty-state" id="empty-state" style="display:none;">No games match your search — try a different title or category, or <a href="#" style="color:var(--yellow);font-weight:800;" onclick="document.getElementById('search-input').value='';document.getElementById('search-input').dispatchEvent(new Event('input'));return false;">clear your search</a>.</div>
 
-  <div class="note-box">
-    Rates with no price yet are marked "Ask us for a quote" — usually a bundle or a brand-new arrival we haven't priced individually. Message us and we'll confirm the rate.
+    <div class="note-box">
+      Rates with no price yet are marked "Ask us for a quote" — usually a bundle or a brand-new arrival we haven't priced individually. Message us and we'll confirm the rate.
+    </div>
+  </div>
+
+  <div class="tab-panel" id="panel-personal">
+    <p class="tab-intro">Bundle up a few titles (with or without a Game Master) for your own game night.</p>
+    <div class="coming-soon">
+      <div class="icon">🎲</div>
+      <h3>Personal Packages Coming Soon</h3>
+      <p>We're still putting together our Personal Packages lineup. In the meantime, <a data-href-field="facebookUrl" href="#" target="_blank" rel="noopener">message us</a> and we'll help build one that fits your game night.</p>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="panel-company">
+    <p class="tab-intro">Team-building nights, office events, or client entertainment — packages built for groups.</p>
+    <div class="coming-soon">
+      <div class="icon">🏢</div>
+      <h3>Company Packages Coming Soon</h3>
+      <p>We're still putting together our Company Packages lineup. In the meantime, <a data-href-field="facebookUrl" href="#" target="_blank" rel="noopener">message us</a> and we'll help build one that fits your event.</p>
+    </div>
   </div>
 
   <div class="footer-cta">
@@ -605,6 +659,15 @@ document.getElementById('rate-tbody').addEventListener('click', (e) => {
 document.getElementById('search-input').addEventListener('input', (e) => {
   searchTerm = e.target.value;
   renderGrid();
+});
+
+document.getElementById('tab-bar').addEventListener('click', (e) => {
+  const btn = e.target.closest('.tab-btn');
+  if (!btn) return;
+  const tab = btn.dataset.tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + tab));
+  if (tab === 'individual') updateScrollFades();
 });
 
 SiteConfig.applySiteConfig(document, SiteConfig.SITE);

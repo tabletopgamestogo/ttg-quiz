@@ -33,13 +33,12 @@
   .app{ width:100%; max-width:720px; margin:0 auto; }
 
   .brand{ text-align:center; margin-bottom:22px; }
-  .brand .dice-row{ display:flex; justify-content:center; gap:8px; margin-bottom:10px; }
-  .brand h1{
-    font-family:'Bungee',cursive; font-size:1.5rem; letter-spacing:0.5px; margin:0; line-height:1.25;
-    background:linear-gradient(90deg,var(--yellow),var(--orange),var(--red));
-    -webkit-background-clip:text; background-clip:text; color:transparent;
+  .brand .logo{
+    width:100%; max-width:360px; height:auto; border-radius:14px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.4);
+    margin:0 auto;
   }
-  .brand p{ margin:8px 0 0; color:var(--cream-dim); font-weight:700; font-size:0.95rem; }
+  .brand p{ margin:12px 0 0; color:var(--cream-dim); font-weight:700; font-size:0.95rem; }
   .back-link{ display:block; text-align:center; margin-bottom:18px; }
   .back-link a{ color:var(--cream-dim); font-size:0.85rem; font-weight:700; text-decoration:none; }
   .back-link a:hover{ color:var(--yellow); }
@@ -114,12 +113,7 @@
 <body>
 <div class="app">
   <div class="brand">
-    <div class="dice-row">
-      <svg width="18" height="18" viewBox="0 0 18 18"><rect width="18" height="18" rx="4" fill="#E6394A"/></svg>
-      <svg width="18" height="18" viewBox="0 0 18 18"><rect width="18" height="18" rx="4" fill="#FFD23F"/></svg>
-      <svg width="18" height="18" viewBox="0 0 18 18"><rect width="18" height="18" rx="4" fill="#4FB477"/></svg>
-    </div>
-    <h1>TABLETOP GAMES TO GO</h1>
+    <img class="logo" src="assets/logo-banner.png" alt="TableTop Games To Go">
     <p>Rental Terms &amp; Policies</p>
   </div>
   <div class="back-link" style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px 16px;">

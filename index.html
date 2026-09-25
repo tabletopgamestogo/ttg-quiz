@@ -31,17 +31,10 @@
   }
   .app{ width:100%; max-width:560px; margin:0 auto; }
   .brand{ text-align:center; margin-bottom:22px; }
-  .brand .dice-row{ display:flex; justify-content:center; gap:8px; margin-bottom:10px; }
-  .brand h1{
-    font-family:'Bungee',cursive;
-    font-size:1.5rem;
-    letter-spacing:0.5px;
-    margin:0;
-    line-height:1.25;
-    background:linear-gradient(90deg,var(--yellow),var(--orange),var(--red));
-    -webkit-background-clip:text;
-    background-clip:text;
-    color:transparent;
+  .brand .logo{
+    width:132px; height:auto; border-radius:22px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.4);
+    margin-bottom:12px;
   }
   .brand p{ margin:8px 0 0; color:var(--cream-dim); font-weight:700; font-size:0.95rem; }
 
@@ -260,12 +253,7 @@
 <body>
 <div class="app">
   <div class="brand">
-    <div class="dice-row">
-      <svg width="18" height="18" viewBox="0 0 18 18"><rect width="18" height="18" rx="4" fill="#E6394A"/></svg>
-      <svg width="18" height="18" viewBox="0 0 18 18"><rect width="18" height="18" rx="4" fill="#FFD23F"/></svg>
-      <svg width="18" height="18" viewBox="0 0 18 18"><rect width="18" height="18" rx="4" fill="#4FB477"/></svg>
-    </div>
-    <h1>TABLETOP GAMES TO GO</h1>
+    <img class="logo" src="assets/logo.png" alt="TableTop Games To Go">
     <p>Find Your Group's Player Type</p>
   </div>
 

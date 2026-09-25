@@ -32,9 +32,12 @@
   }
   .app{ width:100%; max-width:920px; margin:0 auto; }
 
-  .brand{ display:flex; align-items:center; justify-content:flex-start; flex-wrap:wrap; gap:18px; margin-bottom:22px; }
-  .brand-logo{ width:170px; height:auto; border-radius:26px; box-shadow:0 12px 30px rgba(0,0,0,0.4); flex-shrink:0; }
-  .brand p{ margin:0; color:var(--cream-dim); font-weight:700; font-size:0.95rem; text-align:left; }
+  .brand{ text-align:center; margin-bottom:22px; }
+  .brand-logo{
+    width:100%; max-width:360px; height:auto; border-radius:14px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.4); margin:0 auto;
+  }
+  .brand p{ margin:12px 0 0; color:var(--cream-dim); font-weight:700; font-size:0.95rem; }
   .back-links{ display:flex; flex-wrap:wrap; justify-content:center; gap:6px 16px; margin-bottom:18px; }
   .back-links a{ color:var(--cream-dim); font-size:0.85rem; font-weight:700; text-decoration:none; }
   .back-links a:hover{ color:var(--yellow); }
@@ -254,7 +257,7 @@
 <body>
 <div class="app">
   <div class="brand">
-    <img src="assets/logo.png" alt="Tabletop Games To Go" class="brand-logo">
+    <img src="assets/logo-banner.png" alt="Tabletop Games To Go" class="brand-logo">
     <p>Rates &amp; Packages</p>
   </div>
   <div class="back-links">

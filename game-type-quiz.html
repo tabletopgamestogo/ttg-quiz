@@ -249,8 +249,82 @@ const QUESTIONS = [
     { t: "The one who makes sure everyone's included", p: { [CO]: 2, [PA]: 1 } },
     { t: "The instigator", p: { [BL]: 2, [UN]: 1 } },
     { t: "The one with a deck of cards in their bag", p: { [QC]: 2, [PA]: 1 } }
+  ]},
+  { q: "Pick a snack for the game table.", opts: [
+    { t: "Strong coffee for a long session", p: { [SS]: 2, [CO]: 1 } },
+    { t: "Chips and dip for everyone to share", p: { [PA]: 2, [FA]: 1 } },
+    { t: "Something I can eat with one hand between quick rounds", p: { [QC]: 2 } },
+    { t: "An energy drink before battle", p: { [UN]: 2 } }
+  ]},
+  { q: "How do you feel about luck in games?", opts: [
+    { t: "Keep it to a minimum. Skill should win", p: { [SS]: 2, [UN]: 1 } },
+    { t: "A little luck keeps it fair for everyone", p: { [FA]: 2, [CO]: 1 } },
+    { t: "Luck is what makes it funny", p: { [PA]: 2, [QC]: 1 } },
+    { t: "I make my own luck by bluffing", p: { [BL]: 2 } }
+  ]},
+  { q: "Someone at the table is new. What do you do?", opts: [
+    { t: "Sit next to them and help on their turn", p: { [CO]: 2, [FA]: 1 } },
+    { t: "Pick a game they can learn in one round", p: { [QC]: 2, [PA]: 1 } },
+    { t: "Hand them a hero and let them fight me", p: { [UN]: 2 } },
+    { t: "Let them in on the secret… or not", p: { [BL]: 2 } }
+  ]},
+  { q: "What do you want to talk about after the game?", opts: [
+    { t: "The clever move that won it", p: { [SS]: 2 } },
+    { t: "How close we came to saving the day", p: { [CO]: 2 } },
+    { t: "Who betrayed who", p: { [BL]: 2, [UN]: 1 } },
+    { t: "The funniest moment of the night", p: { [PA]: 2 } }
+  ]},
+  { q: "How competitive are you, really?", opts: [
+    { t: "Very. I play to win", p: { [UN]: 2, [SS]: 1 } },
+    { t: "Competitive, but friendly about it", p: { [FA]: 2, [QC]: 1 } },
+    { t: "I'd rather win with the team", p: { [CO]: 2 } },
+    { t: "I'm just here for the fun", p: { [PA]: 2, [BL]: 1 } }
+  ]},
+  { q: "Which game piece speaks to you?", opts: [
+    { t: "A deck of cards", p: { [QC]: 2, [BL]: 1 } },
+    { t: "Hero figures with special powers", p: { [UN]: 2 } },
+    { t: "Tiles and little wooden meeples", p: { [FA]: 2 } },
+    { t: "A board covered in tokens and resources", p: { [SS]: 2, [CO]: 1 } }
+  ]},
+  { q: "Your ideal game night is…", opts: [
+    { t: "Friday with the barkada until late", p: { [PA]: 2, [BL]: 1 } },
+    { t: "A Sunday afternoon with family", p: { [FA]: 2 } },
+    { t: "One-on-one with a partner or rival", p: { [UN]: 2, [CO]: 1 } },
+    { t: "Quick rounds during a break", p: { [QC]: 2 } }
+  ]},
+  { q: "What makes you want to play a game again?", opts: [
+    { t: "Trying a different strategy every time", p: { [SS]: 2 } },
+    { t: "A new hero to try out", p: { [UN]: 2 } },
+    { t: "New people to read and fool", p: { [BL]: 2 } },
+    { t: "A harder challenge level to beat together", p: { [CO]: 2 } }
+  ]},
+  { q: "How do you handle pressure?", opts: [
+    { t: "I love a ticking timer", p: { [CO]: 2, [QC]: 1 } },
+    { t: "I keep calm and keep a straight face", p: { [BL]: 2 } },
+    { t: "I slow down and think it through", p: { [SS]: 1, [FA]: 2 } },
+    { t: "I yell and roll the dice", p: { [PA]: 2, [UN]: 1 } }
+  ]},
+  { q: "Pick a superpower.", opts: [
+    { t: "Seeing three moves ahead", p: { [SS]: 2 } },
+    { t: "Knowing when someone's lying", p: { [BL]: 2 } },
+    { t: "Lightning-fast reflexes", p: { [QC]: 2 } },
+    { t: "Making the whole room laugh", p: { [PA]: 2 } }
+  ]},
+  { q: "If you could rent one box this weekend, it would be…", opts: [
+    { t: "The biggest box with the most pieces", p: { [SS]: 2, [CO]: 1 } },
+    { t: "The one that fits ten people", p: { [PA]: 2, [BL]: 1 } },
+    { t: "The one I can teach my Lola", p: { [FA]: 2, [QC]: 1 } },
+    { t: "The one with a rival to beat", p: { [UN]: 2 } }
   ]}
 ];
+
+// Every question also gets "All of the above": 1 point to each category its other
+// options touch, so a yes-to-everything answer spreads interest instead of stacking it.
+QUESTIONS.forEach(q => {
+  const p = {};
+  q.opts.forEach(o => Object.keys(o.p).forEach(c => p[c] = 1));
+  q.opts.push({ t: "All of the above", p, all: true });
+});
 
 // ---------- SCORING ----------
 const MAX = {};
@@ -291,7 +365,7 @@ function renderIntro() {
   }).join('');
   screen.innerHTML = `
     <div class="intro">
-      <span class="eyebrow">9 questions · about 2 minutes</span>
+      <span class="eyebrow">${QUESTIONS.length} questions · about 4 minutes</span>
       <h1>What kind of board game do I enjoy?</h1>
       <p class="dim">Answer for yourself, not your group. We'll match you to one of the seven categories on our rental shelf and pick games from it for you to try.</p>
       <div class="shelf">${shelf}</div>
@@ -307,7 +381,7 @@ function renderQuestion() {
     <div class="bar"><i style="width:${(i / QUESTIONS.length) * 100}%"></i></div>
     <h2>${esc(Q.q)}</h2>
     <div class="opts">${Q.opts.map((o, k) => `
-      <button class="opt" data-k="${k}"><span class="key">${'ABCD'[k]}</span><span class="txt">${esc(o.t)}</span></button>`).join('')}
+      <button class="opt" data-k="${k}"><span class="key">${'ABCDE'[k]}</span><span class="txt">${esc(o.t)}</span></button>`).join('')}
     </div>
     ${i > 0 ? '<button class="back" id="back">← Back</button>' : ''}`;
   screen.querySelectorAll('.opt').forEach(b => b.onclick = () => {
@@ -333,6 +407,10 @@ function renderResult() {
   const info = CATS[top.cat], col = CATEGORY_COLORS[top.cat];
   const { picks, rest } = gamesFor(top.cat);
   const total = ranked.reduce((s, r) => s + r.score, 0) || 1;
+  const allCount = answers.filter((ai, qi) => QUESTIONS[qi].opts[ai].all).length;
+  const omnivore = allCount >= QUESTIONS.length / 2
+    ? `<p>You picked "All of the above" ${allCount} times out of ${QUESTIONS.length}. You'll probably enjoy almost anything on our shelf, but this is where we'd start.</p>`
+    : '';
 
   screen.className = '';
   screen.innerHTML = `
@@ -342,6 +420,7 @@ function renderResult() {
         <div class="persona">${esc(info.persona)}</div>
         <div class="catname">Your shelf: ${esc(top.cat)}</div>
         <p>${esc(info.blurb)}</p>
+        ${omnivore}
       </div>
 
       <div class="card section">

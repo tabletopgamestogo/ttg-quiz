@@ -132,6 +132,14 @@
   }
   .cat-chip:hover{ transform:translateY(-1px); }
   .cat-chip.active{ border-color:var(--cream); }
+  .mechanic-select{
+    font-size:0.76rem; font-weight:800; padding:7px 13px; border-radius:20px; border:2px solid transparent;
+    cursor:pointer; color:var(--cream); background:var(--bg-alt2); font-family:'Nunito',sans-serif;
+    outline:none; transition:all 0.15s ease;
+  }
+  .mechanic-select:hover{ transform:translateY(-1px); }
+  .mechanic-select:focus{ border-color:var(--cream); }
+  .mechanic-select option{ background:var(--bg-alt2); color:var(--cream); }
   .result-count{ text-align:center; color:var(--cream-dim); font-size:0.82rem; font-weight:700; margin-bottom:14px; }
 
   .badge{
@@ -288,6 +296,10 @@
       </div>
       <div class="cat-chips" id="cat-chips"></div>
       <div class="cat-chips" id="ptype-chips"></div>
+      <div class="cat-chips" id="mechanic-row">
+        <span class="filter-label">Mechanic</span>
+        <select class="mechanic-select" id="mechanic-select"></select>
+      </div>
       <div class="cat-chips" id="duration-chips"></div>
     </div>
 
@@ -402,6 +414,7 @@ const DURATION_COLORS = {
   "Heavy":  {bg:"#E6394A", fg:"#F7F1E6"},
 };
 const DURATIONS = Object.keys(DURATION_COLORS);
+const MECHANICS = [...new Set(RATES.map(g => g.primaryMechanic).filter(Boolean))].sort((a, b) => a.localeCompare(b));
 
 // ---------- GLOSSARY — plain-language meanings shown in the "i" popovers ----------
 const CATEGORY_DESCRIPTIONS = {
@@ -462,6 +475,7 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeGloss
 // ---------- STATE ----------
 let activeCategory = "All";
 let activePlayerType = "All";
+let activeMechanic = "All";
 let activeDuration = "All";
 let searchTerm = "";
 const expandedGames = new Set(); // game names with their detail row open, persists across re-filters
@@ -536,6 +550,23 @@ function renderPlayerTypeChips(){
   });
 }
 
+function renderMechanicSelect(){
+  const sel = document.getElementById('mechanic-select');
+  sel.innerHTML = '';
+  const allOpt = document.createElement('option');
+  allOpt.value = 'All';
+  allOpt.textContent = 'All Mechanics';
+  sel.appendChild(allOpt);
+  MECHANICS.forEach(m => {
+    const opt = document.createElement('option');
+    opt.value = m;
+    opt.textContent = m;
+    sel.appendChild(opt);
+  });
+  sel.value = activeMechanic;
+  sel.onchange = () => { activeMechanic = sel.value; renderGrid(); };
+}
+
 function renderDurationChips(){
   const wrap = document.getElementById('duration-chips');
   wrap.innerHTML = '';
@@ -574,14 +605,16 @@ function renderGrid(){
   const filtered = RATES.filter(g => {
     const matchesCat = activeCategory === 'All' || g.category === activeCategory;
     const matchesPType = activePlayerType === 'All' || g.playerType === activePlayerType;
+    const matchesMechanic = activeMechanic === 'All' || g.primaryMechanic === activeMechanic;
     const matchesDuration = activeDuration === 'All' || g.tgtgDuration === activeDuration;
     const matchesSearch = !term || g.name.toLowerCase().includes(term);
-    return matchesCat && matchesPType && matchesDuration && matchesSearch;
+    return matchesCat && matchesPType && matchesMechanic && matchesDuration && matchesSearch;
   });
 
   const filterBits = [
     activeCategory !== 'All' ? activeCategory : '',
     activePlayerType !== 'All' ? activePlayerType : '',
+    activeMechanic !== 'All' ? activeMechanic : '',
     activeDuration !== 'All' ? activeDuration + ' duration' : '',
   ].filter(Boolean);
   countEl.textContent = filtered.length + (filtered.length === 1 ? ' game' : ' games') +
@@ -682,6 +715,7 @@ document.getElementById('tab-bar').addEventListener('click', (e) => {
 SiteConfig.applySiteConfig(document, SiteConfig.SITE);
 renderChips();
 renderPlayerTypeChips();
+renderMechanicSelect();
 renderDurationChips();
 renderGrid();
 </script>

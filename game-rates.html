@@ -334,8 +334,9 @@
     <p class="tab-intro">Bundle up a few titles (with or without a Game Master) for your own game night.</p>
     <div class="coming-soon">
       <div class="icon">🎲</div>
-      <h3>Personal Packages Coming Soon</h3>
-      <p>We're still putting together our Personal Packages lineup. In the meantime, <a data-href-field="facebookUrl" href="#" target="_blank" rel="noopener">message us</a> and we'll help build one that fits your game night.</p>
+      <h3>Personal Bundles</h3>
+      <p>Curated Main + Lights combos for every occasion, category, player type, and fandom — tick the games you want right on the page.</p>
+      <p><a class="quote-link" href="rental-bundles.html">Browse Personal Bundles →</a></p>
     </div>
   </div>
 
@@ -343,8 +344,9 @@
     <p class="tab-intro">Team-building nights, office events, or client entertainment — packages built for groups.</p>
     <div class="coming-soon">
       <div class="icon">🏢</div>
-      <h3>Company Packages Coming Soon</h3>
-      <p>We're still putting together our Company Packages lineup. In the meantime, <a data-href-field="facebookUrl" href="#" target="_blank" rel="noopener">message us</a> and we'll help build one that fits your event.</p>
+      <h3>Corporate &amp; Group Bundles</h3>
+      <p>Same curated bundles, tuned for offices and organizations — every corporate booking includes a Game Master.</p>
+      <p><a class="quote-link" href="rental-bundles.html">Browse Corporate &amp; Group Bundles →</a></p>
     </div>
   </div>
 
@@ -623,6 +625,7 @@ function renderGrid(){
       detailRow.className = 'detail-row';
       const meta = [
         g.durationExperience ? `<span>⏱ <strong>${g.durationExperience}</strong></span>` : '',
+        g.primaryMechanic ? `<span>🧩 <strong>${g.primaryMechanic}</strong></span>` : '',
         g.gameType ? `<span>🎲 <strong>${g.gameType}</strong></span>` : '',
       ].filter(Boolean).join('');
       detailRow.innerHTML = `<td colspan="8">${meta ? `<div class="detail-meta">${meta}</div>` : ''}${g.description}</td>`;

@@ -173,7 +173,7 @@
   }
   .scroll-fade-left::after{ content:'‹'; left:2px; }
   .scroll-fade-right::after{ content:'›'; right:2px; }
-  table.rate-table{ width:100%; min-width:860px; border-collapse:separate; border-spacing:0; font-size:0.87rem; table-layout:fixed; }
+  table.rate-table{ width:100%; min-width:960px; border-collapse:separate; border-spacing:0; font-size:0.87rem; table-layout:fixed; }
   table.rate-table th{
     text-align:left; padding:12px 14px; border-bottom:1px solid #3A2A4A; background:var(--bg-alt2);
     color:var(--cream); font-weight:800; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.5px;
@@ -188,6 +188,7 @@
   table.rate-table td.gname{ color:var(--cream); font-weight:800; }
   table.rate-table td.players{ font-size:0.82rem; }
   table.rate-table td.ptype{ font-size:0.82rem; }
+  table.rate-table td.mechanic{ font-size:0.82rem; }
   .badge.duration-light{ background:var(--green); color:#12241A; }
   .badge.duration-medium{ background:var(--orange); color:#1A1220; }
   .badge.duration-heavy{ background:var(--red); color:var(--cream); }
@@ -296,13 +297,14 @@
       <div class="rate-table-wrap" id="rate-table-wrap">
         <table class="rate-table">
           <colgroup>
-            <col style="width:16%">
-            <col style="width:19%">
-            <col style="width:11%">
-            <col style="width:11%">
+            <col style="width:13%">
+            <col style="width:17%">
+            <col style="width:9%">
             <col style="width:10%">
             <col style="width:11%">
-            <col style="width:11%">
+            <col style="width:9%">
+            <col style="width:10%">
+            <col style="width:10%">
             <col style="width:11%">
           </colgroup>
           <thead>
@@ -311,6 +313,7 @@
               <th>Game</th>
               <th>Players</th>
               <th>Player Type</th>
+              <th>Mechanic</th>
               <th>Duration</th>
               <th class="tnum">1 Day</th>
               <th class="tnum">2 Days</th>
@@ -336,7 +339,7 @@
       <div class="icon">🎲</div>
       <h3>Personal Bundles</h3>
       <p>Curated Main + Lights combos for every occasion, category, player type, and fandom — tick the games you want right on the page.</p>
-      <p><a class="quote-link" href="rental-bundles.html">Browse Personal Bundles →</a></p>
+      <p><a class="quote-link" href="rental-bundles-personal.html">Browse Personal Bundles →</a></p>
     </div>
   </div>
 
@@ -346,7 +349,7 @@
       <div class="icon">🏢</div>
       <h3>Corporate &amp; Group Bundles</h3>
       <p>Same curated bundles, tuned for offices and organizations — every corporate booking includes a Game Master.</p>
-      <p><a class="quote-link" href="rental-bundles.html">Browse Corporate &amp; Group Bundles →</a></p>
+      <p><a class="quote-link" href="rental-bundles-corporate.html">Browse Corporate &amp; Group Bundles →</a></p>
     </div>
   </div>
 
@@ -609,6 +612,7 @@ function renderGrid(){
       ` : ''}</td>
       <td class="players">${g.players || '—'}</td>
       <td class="ptype">${g.playerType || '—'}</td>
+      <td class="mechanic">${g.primaryMechanic || '—'}</td>
       <td>${g.tgtgDuration ? `<span class="badge duration-${g.tgtgDuration.toLowerCase()}">${g.tgtgDuration}</span>` : '—'}</td>
       ${hasRate ? `
         <td class="tnum">${formatPeso(g.d1)}</td>
@@ -625,10 +629,9 @@ function renderGrid(){
       detailRow.className = 'detail-row';
       const meta = [
         g.durationExperience ? `<span>⏱ <strong>${g.durationExperience}</strong></span>` : '',
-        g.primaryMechanic ? `<span>🧩 <strong>${g.primaryMechanic}</strong></span>` : '',
         g.gameType ? `<span>🎲 <strong>${g.gameType}</strong></span>` : '',
       ].filter(Boolean).join('');
-      detailRow.innerHTML = `<td colspan="8">${meta ? `<div class="detail-meta">${meta}</div>` : ''}${g.description}</td>`;
+      detailRow.innerHTML = `<td colspan="9">${meta ? `<div class="detail-meta">${meta}</div>` : ''}${g.description}</td>`;
       tbody.appendChild(detailRow);
     }
   });
